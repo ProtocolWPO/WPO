@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Whale Protocol Official — Reporting & Market Integrity</title>
+  <meta name="description" content="Whale Protocol Official — Community reporting for fake projects, suspicious wallets, fraud tokens, and malicious addresses." />
+
+  <!-- Open Graph / Twitter (share preview) -->
+  <meta property="og:title" content="Whale Protocol Official" />
+  <meta property="og:description" content="Community reporting for fraud, suspicious wallets, and malicious addresses." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+  <style>
+    :root{
+      --bg:#05070f;
+      --card:#0b1224;
+      --card2:#0a1630;
+      --accent:#d4af37;
+      --accent2:#f59e0b;
+      --text:#e6e6eb;
+      --muted:#9aa0b3;
+      --border:rgba(212,175,55,.25);
+      --radius:18px;
+      --shadow:0 18px 45px rgba(0,0,0,.55);
+      --ok:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, #0e1633 0, #03040a 60%, #000 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1120px;margin:auto;padding:22px 16px 70px}
+
+    /* Top Bar */
+    .topbar{
+      position:sticky; top:0; z-index:100;
+      padding:12px 0;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to bottom, rgba(2,6,23,.92), rgba(2,6,23,.65), rgba(2,6,23,0));
+      border-bottom: 1px solid rgba(212,175,55,.14);
+    }
+    header{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      padding:14px 14px;
+      border:1px solid rgba(212,175,55,.18);
+      border-radius: 18px;
+      background: rgba(11,18,36,.86);
+      box-shadow: var(--shadow);
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:240px}
+    .logo-wrap{
+      width:44px;height:44px;border-radius:999px;
+      background: radial-gradient(circle at 30% 0, #fff1c2, #fbbf24, #6b3b00);
+      border:1px solid rgba(212,175,55,.65);
+      box-shadow: 0 0 26px rgba(212,175,55,.45);
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+    .logo-wrap img{width:100%;height:100%;object-fit:cover}
+    .brand-title{display:flex;flex-direction:column;gap:1px}
+    .brand-title h1{
+      font-size:1.02rem; letter-spacing:.12em; text-transform: uppercase;
+      white-space:nowrap;
+    }
+    .brand-title p{font-size:.86rem;color:var(--muted)}
+    nav{
+      display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center
+    }
+    .navlink{
+      padding:8px 12px;border-radius:999px;
+      border:1px solid rgba(148,163,184,.16);
+      background: rgba(10,22,48,.40);
+      color: var(--muted);
+      font-size:.84rem;
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .navlink:hover{border-color:rgba(212,175,55,.45);color:#fff;transform:translateY(-1px)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+    .btn{
+      padding:9px 14px;
+      border-radius:999px;
+      border:1px solid rgba(212,175,55,.25);
+      background: linear-gradient(135deg,#141e42,#0b1224);
+      color: var(--text);
+      font-size:.85rem;
+      transition:.18s ease;
+      cursor:pointer;
+      display:inline-flex;gap:8px;align-items:center;
+    }
+    .btn:hover{border-color: var(--accent); transform: translateY(-2px)}
+    .btn-primary{
+      border-color: rgba(212,175,55,.55);
+      background: linear-gradient(135deg,#f5d06b,#d4af37,#8a6a13);
+      color:#111827;
+      font-weight:800;
+    }
+    .btn-ghost{background: rgba(10,22,48,.55)}
+    @media (max-width: 980px){
+      header{flex-direction:column;align-items:stretch}
+      .brand-title h1{white-space:normal}
+      nav{justify-content:flex-start}
+      .actions{justify-content:flex-start}
+    }
+
+    /* Sections */
+    .hero{
+      margin-top: 18px;
+      border: 1px solid rgba(148,163,184,.16);
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(11,18,36,.92), rgba(2,6,23,.92));
+      box-shadow: var(--shadow);
+      padding: 26px 22px;
+      display:grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 18px;
+      align-items:center;
+    }
+    @media (max-width: 900px){ .hero{grid-template-columns:1fr} }
+
+    .hero h2{
+      font-size: 1.65rem;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .hero p{color: var(--muted); font-size: 1.02rem}
+    .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .chip{
+      padding:6px 12px;border-radius:999px;
+      border:1px solid rgba(148,163,184,.18);
+      background: rgba(10,22,48,.55);
+      font-size:.8rem;
+      color: var(--muted);
+    }
+    .chip.accent{
+      border-color: rgba(212,175,55,.55);
+      background: rgba(212,175,55,.10);
+      color:#fff3c8;
+    }
+    .hero-side{
+      border-radius: 18px;
+      border: 1px solid rgba(212,175,55,.18);
+      background: rgba(10,22,48,.55);
+      padding: 16px;
+    }
+    .hero-side .row{display:flex;justify-content:space-between;gap:10px;margin:8px 0;font-size:.9rem}
+    .k{color:var(--muted)}
+    .v{color:#f9fafb;font-weight:600}
+    .divider{height:1px;background:rgba(148,163,184,.16);margin:10px 0}
+
+    section{
+      margin-top: 16px;
+      padding: 22px 18px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(212,175,55,.16);
+      background: linear-gradient(145deg, rgba(11,18,36,.92), rgba(2,6,23,.92));
+      box-shadow: var(--shadow);
+    }
+    section h3{
+      font-size: 1.02rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .card{
+      border-radius: 16px;
+      border: 1px solid rgba(212,175,55,.14);
+      background: rgba(10,22,48,.55);
+      padding: 16px;
+    }
+    .card h4{font-size: 1rem; margin-bottom: 6px; color:#fff}
+    .card p{color: var(--muted); font-size: .92rem}
+    .note{
+      margin-top: 14px;
+      border-radius: 14px;
+      border: 1px dashed rgba(212,175,55,.45);
+      background: rgba(212,175,55,.08);
+      color: #f5e7b2;
+      padding: 14px;
+      font-size: .92rem;
+    }
+
+    /* Form */
+    form{margin-top: 10px}
+    .form-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 720px){ .form-grid{grid-template-columns: 1fr} }
+    label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:6px}
+    input, select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(148,163,184,.18);
+      background: rgba(5,7,15,.75);
+      color: var(--text);
+      outline: none;
+      transition: .18s ease;
+      font-size: .95rem;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(212,175,55,.55);
+      box-shadow: 0 0 0 3px rgba(212,175,55,.12);
+    }
+    textarea{min-height: 120px; resize: vertical}
+
+    .form-actions{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top: 12px;
+    }
+    .small{font-size:.85rem;color:var(--muted)}
+    .status{
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,.14);
+      background: rgba(10,22,48,.45);
+      display:none;
+    }
+    .status.ok{border-color: rgba(34,197,94,.35); color:#dcfce7}
+    .status.warn{border-color: rgba(245,158,11,.35); color:#fff7ed}
+    .status.bad{border-color: rgba(239,68,68,.35); color:#fee2e2}
+
+    /* Reports */
+    .report{display:flex;flex-direction:column;gap:10px}
+    .report-top{
+      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;
+    }
+    .badge{
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(148,163,184,.18);
+      background: rgba(5,7,15,.6);
+      font-size:.78rem;
+      color: var(--muted);
+    }
+    .badge.high{border-color: rgba(239,68,68,.35); color:#fecaca}
+    .badge.medium{border-color: rgba(245,158,11,.35); color:#ffedd5}
+    .badge.info{border-color: rgba(59,130,246,.35); color:#dbeafe}
+    .meta{color:var(--muted);font-size:.86rem}
+    .report a{color: var(--accent2); text-decoration: underline; text-underline-offset: 3px}
+
+    footer{
+      margin-top: 16px;
+      text-align:center;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    .footer-links{
+      display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px
+    }
+    .footer-links a{
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* Language visibility */
+    [data-lang-text]{display:none}
+    html[data-lang="en"] [data-lang-text="en"]{display:block}
+    html[data-lang="ar"] [data-lang-text="ar"]{display:block}
+
+    /* Honeypot (anti-bot) */
+    .hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="container" style="padding:0 16px;">
+      <header>
+        <div class="brand">
+          <div class="logo-wrap" aria-hidden="true">
+            <!-- Replace logo.svg with your own file (keep the same name) -->
+            <img src="logo.svg" alt="Logo">
+          </div>
+          <div class="brand-title">
+            <h1>Whale Protocol Official</h1>
+            <p data-lang-text="en">Market Integrity • Fraud Reporting • Investor Protection</p>
+            <p data-lang-text="ar">نزاهة السوق • بلاغات الاحتيال • حماية المستثمر</p>
+          </div>
+        </div>
+
+        <nav aria-label="Sections">
+          <a class="navlink" href="#home" data-lang-text="en">Home</a>
+          <a class="navlink" href="#home" data-lang-text="ar">الرئيسية</a>
+
+          <a class="navlink" href="#categories" data-lang-text="en">Categories</a>
+          <a class="navlink" href="#categories" data-lang-text="ar">الفئات</a>
+
+          <a class="navlink" href="#submit" data-lang-text="en">Submit Report</a>
+          <a class="navlink" href="#submit" data-lang-text="ar">إرسال بلاغ</a>
+
+          <a class="navlink" href="#reports" data-lang-text="en">Published Reports</a>
+          <a class="navlink" href="#reports" data-lang-text="ar">التقارير</a>
+
+          <a class="navlink" href="#contact" data-lang-text="en">Contact</a>
+          <a class="navlink" href="#contact" data-lang-text="ar">تواصل</a>
+        </nav>
+
+        <div class="actions">
+          <button class="btn btn-ghost" id="langToggle" type="button" aria-label="Toggle language">AR</button>
+          <a class="btn" href="https://x.com/Protocol_WPO" target="_blank" rel="noopener">Official X</a>
+          <a class="btn btn-primary" href="mailto:whalebreaker2025@gmail.com">Contact Us</a>
+        </div>
+      </header>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- HERO -->
+    <div class="hero" id="home">
+      <div>
+        <h2 data-lang-text="en">Market Integrity Initiative</h2>
+        <h2 data-lang-text="ar">مبادرة نزاهة السوق</h2>
+
+        <p data-lang-text="en">
+          Whale Protocol Official is an independent community initiative focused on exposing fraud,
+          reporting suspicious activity, and restoring trust in digital asset markets through transparency
+          and accountability.
+        </p>
+        <p data-lang-text="ar">
+          Whale Protocol Official مبادرة مجتمعية مستقلة تهدف إلى كشف الاحتيال، رصد الأنشطة المشبوهة،
+          وإعادة الثقة لسوق الأصول الرقمية عبر الشفافية والمساءلة.
+        </p>
+
+        <div class="chips">
+          <span class="chip accent" data-lang-text="en">Verified Alerts</span>
+          <span class="chip accent" data-lang-text="ar">تنبيهات موثقة</span>
+
+          <span class="chip" data-lang-text="en">Evidence-Based</span>
+          <span class="chip" data-lang-text="ar">مبني على الأدلة</span>
+
+          <span class="chip" data-lang-text="en">Community Reporting</span>
+          <span class="chip" data-lang-text="ar">بلاغات المجتمع</span>
+        </div>
+      </div>
+
+      <div class="hero-side">
+        <div class="row">
+          <span class="k" data-lang-text="en">Official X</span>
+          <span class="k" data-lang-text="ar">حساب X الرسمي</span>
+          <span class="v"><a href="https://x.com/Protocol_WPO" target="_blank" rel="noopener">@Protocol_WPO</a></span>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <span class="k" data-lang-text="en">Email</span>
+          <span class="k" data-lang-text="ar">البريد</span>
+          <span class="v"><a href="mailto:whalebreaker2025@gmail.com">whalebreaker2025@gmail.com</a></span>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <span class="k" data-lang-text="en">Policy</span>
+          <span class="k" data-lang-text="ar">السياسة</span>
+          <span class="v" data-lang-text="en">No accusations without evidence</span>
+          <span class="v" data-lang-text="ar">لا اتهامات بدون أدلة</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <section id="categories">
+      <h3 data-lang-text="en">Community Reporting Categories</h3>
+      <h3 data-lang-text="ar">فئات البلاغات</h3>
+
+      <div class="grid">
+        <div class="card">
+          <h4 data-lang-text="en">Report a Fake Project</h4>
+          <h4 data-lang-text="ar">الإبلاغ عن مشروع وهمي</h4>
+          <p data-lang-text="en">Misleading claims, false promises, lack of transparency.</p>
+          <p data-lang-text="ar">ادعاءات مضللة، وعود كاذبة، غياب الشفافية.</p>
+        </div>
+
+        <div class="card">
+          <h4 data-lang-text="en">Report a Suspicious Wallet</h4>
+          <h4 data-lang-text="ar">الإبلاغ عن محفظة مشبوهة</h4>
+          <p data-lang-text="en">Manipulation patterns, abnormal movements, coordinated dumping.</p>
+          <p data-lang-text="ar">أنماط تلاعب، تحركات غير طبيعية، تصريف منسق.</p>
+        </div>
+
+        <div class="card">
+          <h4 data-lang-text="en">Report a Fraudulent Token</h4>
+          <h4 data-lang-text="ar">الإبلاغ عن عملة احتيالية</h4>
+          <p data-lang-text="en">Rug-pull signals, deceptive promotion, anonymous teams.</p>
+          <p data-lang-text="ar">مؤشرات سحب السيولة، ترويج مخادع، فرق مجهولة.</p>
+        </div>
+
+        <div class="card">
+          <h4 data-lang-text="en">Report a Malicious Address</h4>
+          <h4 data-lang-text="ar">الإبلاغ عن عنوان مسمّم</h4>
+          <p data-lang-text="en">Addresses linked to scams, exploits, or investor targeting.</p>
+          <p data-lang-text="ar">عناوين مرتبطة بالنصب أو الاستغلال أو استهداف المستثمرين.</p>
+        </div>
+      </div>
+
+      <div class="note" data-lang-text="en">
+        We do not publish accusations without evidence. Reports are reviewed and verified before any public alert is issued.
+      </div>
+      <div class="note" data-lang-text="ar">
+        لا ننشر اتهامات دون أدلة. تتم مراجعة البلاغات والتحقق منها قبل إصدار أي تنبيه علني.
+      </div>
+    </section>
+
+    <!-- FORM -->
+    <section id="submit">
+      <h3 data-lang-text="en">Submit a Report</h3>
+      <h3 data-lang-text="ar">إرسال بلاغ</h3>
+
+      <p class="small" data-lang-text="en">
+        Your report will be prepared as an email draft to our official inbox. Provide clear evidence and explorer links when possible.
+      </p>
+      <p class="small" data-lang-text="ar">
+        سيتم تجهيز البلاغ كمسودة بريد لإرساله إلى بريدنا الرسمي. يُفضل إرفاق أدلة وروابط المستكشف إن وجدت.
+      </p>
+
+      <form id="reportForm" novalidate>
+        <!-- Honeypot (bots fill it) -->
+        <div class="hp" aria-hidden="true">
+          <label for="company">Company</label>
+          <input id="company" name="company" type="text" autocomplete="off" tabindex="-1" />
+        </div>
+
+        <div class="form-grid">
+          <div>
+            <label for="reportType" data-lang-text="en">Report Type</label>
+            <label for="reportType" data-lang-text="ar">نوع البلاغ</label>
+            <select id="reportType" name="reportType" required>
+              <option value="" id="reportTypePlaceholder">Select…</option>
+              <option value="Fake Project">Fake Project / مشروع وهمي</option>
+              <option value="Suspicious Wallet">Suspicious Wallet / محفظة مشبوهة</option>
+              <option value="Fraud Token">Fraudulent Token / عملة احتيالية</option>
+              <option value="Malicious Address">Malicious Address / عنوان مسمّم</option>
+              <option value="Other">Other / أخرى</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="network" data-lang-text="en">Network / Chain</label>
+            <label for="network" data-lang-text="ar">الشبكة</label>
+            <input id="network" name="network" type="text" placeholder="e.g., Ethereum, BSC, Solana, GateChain" />
+          </div>
+
+          <div>
+            <label for="entity" data-lang-text="en">Project / Token / Wallet Name (optional)</label>
+            <label for="entity" data-lang-text="ar">اسم المشروع/العملة/المحفظة (اختياري)</label>
+            <input id="entity" name="entity" type="text" placeholder="Name or ticker" />
+          </div>
+
+          <div>
+            <label for="address" data-lang-text="en">Suspicious Address / Contract</label>
+            <label for="address" data-lang-text="ar">العنوان/العقد المشبوه</label>
+            <input id="address" name="address" type="text" placeholder="0x… / Solana / etc." />
+          </div>
+
+          <div>
+            <label for="links" data-lang-text="en">Evidence Links (Explorer, TX, Screenshots)</label>
+            <label for="links" data-lang-text="ar">روابط الأدلة (مستكشف/معاملات/صور)</label>
+            <input id="links" name="links" type="text" placeholder="Paste URLs (separate with commas)" />
+          </div>
+
+          <div>
+            <label for="contactField" data-lang-text="en">Your Contact (optional)</label>
+            <label for="contactField" data-lang-text="ar">وسيلة تواصل (اختياري)</label>
+            <input id="contactField" name="contactField" type="text" placeholder="Email / X handle (optional)" />
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label for="details" data-lang-text="en">Report Details</label>
+          <label for="details" data-lang-text="ar">تفاصيل البلاغ</label>
+          <textarea id="details" name="details" required placeholder="Explain what happened, timeline, and why it is suspicious…"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">
+            <span data-lang-text="en">Prepare Email & Send</span>
+            <span data-lang-text="ar">تجهيز البريد وإرساله</span>
+          </button>
+
+          <button class="btn btn-ghost" type="button" id="copyBtn">
+            <span data-lang-text="en">Copy Report Text</span>
+            <span data-lang-text="ar">نسخ نص البلاغ</span>
+          </button>
+
+          <span class="small" data-lang-text="en">Tip: TX links speed up verification.</span>
+          <span class="small" data-lang-text="ar">نصيحة: روابط المعاملات تسرّع التحقق.</span>
+        </div>
+
+        <div class="status ok" id="okBox" data-lang-text="en">Copied. You can paste it anywhere.</div>
+        <div class="status ok" id="okBoxAr" data-lang-text="ar">تم النسخ. يمكنك لصقه في أي مكان.</div>
+
+        <div class="status warn" id="warnBox" data-lang-text="en">Please choose a Report Type and add Details.</div>
+        <div class="status warn" id="warnBoxAr" data-lang-text="ar">يرجى اختيار نوع البلاغ وإضافة التفاصيل.</div>
+
+        <div class="status bad" id="badBox" data-lang-text="en">Please provide an Address or Evidence Links (at least one).</div>
+        <div class="status bad" id="badBoxAr" data-lang-text="ar">يرجى إدخال العنوان أو روابط الأدلة (واحد على الأقل).</div>
+
+        <div class="status warn" id="cooldownBox" data-lang-text="en">Please wait a bit before sending another report.</div>
+        <div class="status warn" id="cooldownBoxAr" data-lang-text="ar">يرجى الانتظار قليلًا قبل إرسال بلاغ جديد.</div>
+      </form>
+    </section>
+
+    <!-- PUBLISHED REPORTS -->
+    <section id="reports">
+      <h3 data-lang-text="en">Published Reports</h3>
+      <h3 data-lang-text="ar">التقارير المنشورة</h3>
+
+      <p class="small" data-lang-text="en">These cards load from <code>reports.json</code>. Edit that file to publish real verified alerts.</p>
+      <p class="small" data-lang-text="ar">هذه البطاقات تُقرأ من ملف <code>reports.json</code>. عدّل الملف لنشر التنبيهات الموثقة.</p>
+
+      <div class="grid" id="reportsGrid"></div>
+
+      <div class="note" data-lang-text="en">
+        Disclaimer: Whale Protocol Official does not provide financial advice or price predictions. We publish safety-focused reports to reduce risk and support responsible investing.
+      </div>
+      <div class="note" data-lang-text="ar">
+        تنبيه: Whale Protocol Official لا يقدم نصائح استثمارية أو توقعات سعرية. ننشر تقارير توعوية لحماية المستثمر وتقليل المخاطر وتعزيز الاستثمار المسؤول.
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <h3 data-lang-text="en">Official Communication</h3>
+      <h3 data-lang-text="ar">التواصل الرسمي</h3>
+
+      <p data-lang-text="en">
+        Follow verified alerts on X:
+        <a href="https://x.com/Protocol_WPO" target="_blank" rel="noopener" style="color:var(--accent2);text-decoration:underline;text-underline-offset:3px;">
+          https://x.com/Protocol_WPO
+        </a>
+      </p>
+      <p data-lang-text="ar">
+        تابع التنبيهات الموثقة على X:
+        <a href="https://x.com/Protocol_WPO" target="_blank" rel="noopener" style="color:var(--accent2);text-decoration:underline;text-underline-offset:3px;">
+          https://x.com/Protocol_WPO
+        </a>
+      </p>
+
+      <p data-lang-text="en" style="margin-top:10px;">
+        Contact us:
+        <a href="mailto:whalebreaker2025@gmail.com" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">
+          whalebreaker2025@gmail.com
+        </a>
+      </p>
+      <p data-lang-text="ar" style="margin-top:10px;">
+        راسلنا:
+        <a href="mailto:whalebreaker2025@gmail.com" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">
+          whalebreaker2025@gmail.com
+        </a>
+      </p>
+    </section>
+
+    <footer>
+      © <span style="color:var(--accent);font-weight:800">Whale Protocol Official</span> — Community Market Integrity Initiative
+      <div class="footer-links">
+        <a href="https://x.com/Protocol_WPO" target="_blank" rel="noopener">X</a>
+        <a href="mailto:whalebreaker2025@gmail.com">Contact</a>
+        <a href="#submit">Submit Report</a>
+        <a href="#reports">Reports</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
