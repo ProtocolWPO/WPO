@@ -2,6 +2,6 @@
   "source": "X:@Protocol_WPO",
   "filter": "#WPO_REPORT",
   "updated_at": "2026-01-21T09:05:33Z",
-  "reports": [],
+  "reports": [123456789],
   "error": "X API 402 Payment Required: token tier has no access to this endpoint. Use a paid X API plan/token."
 }
