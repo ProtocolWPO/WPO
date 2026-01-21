@@ -1,16 +1,7 @@
 {
   "source": "X:@Protocol_WPO",
   "filter": "#WPO_REPORT",
-  "updated_at": "2026-01-21T09:11:10Z",
-  "reports": [{
-  "id": "manual-001",
-  "title_en": "High Risk Alert: Liquidity Concentration",
-  "status_en": "Under investigation",
-  "evidence_en": "On-chain data review",
-  "risk": "high",
-  "date": "2026-01-21",
-  "link": "https://x.com/Protocol_WPO"
-}
-],
+  "updated_at": "2026-01-21T09:33:26Z",
+  "reports": [],
   "error": "X API 402 Payment Required: token tier has no access to this endpoint. Use a paid X API plan/token."
 }
