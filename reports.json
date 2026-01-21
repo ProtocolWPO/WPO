@@ -1,40 +1,7 @@
 {
-  "reports": [
-    {
-      "id": "001",
-      "date": "2026-01-20",
-      "risk": "high",
-      "title_en": "Alert #001 — Suspicious Liquidity Movements",
-      "title_ar": "تنبيه #001 — تحركات سيولة مشبوهة",
-      "status_en": "Status: Under Review",
-      "status_ar": "الحالة: قيد المراجعة",
-      "evidence_en": "Evidence: On-chain TX links",
-      "evidence_ar": "الأدلة: روابط معاملات على السلسلة",
-      "link": "https://x.com/Protocol_WPO"
-    },
-    {
-      "id": "002",
-      "date": "2026-01-20",
-      "risk": "medium",
-      "title_en": "Report #002 — Fake Project Red Flags",
-      "title_ar": "تقرير #002 — مؤشرات مشروع وهمي",
-      "status_en": "Status: Published",
-      "status_ar": "الحالة: منشور",
-      "evidence_en": "Summary: Misleading promises and anonymity",
-      "evidence_ar": "الخلاصة: وعود مضللة وهوية غير واضحة",
-      "link": "https://x.com/Protocol_WPO"
-    },
-    {
-      "id": "003",
-      "date": "2026-01-20",
-      "risk": "info",
-      "title_en": "Notice #003 — Malicious Address Watchlist",
-      "title_ar": "إشعار #003 — قائمة مراقبة لعناوين مسمّمة",
-      "status_en": "Status: Updated",
-      "status_ar": "الحالة: محدث",
-      "evidence_en": "Purpose: Investor safety awareness",
-      "evidence_ar": "الهدف: رفع الوعي وحماية المستثمر",
-      "link": "https://x.com/Protocol_WPO"
-    }
-  ]
+  "source": "X:@Protocol_WPO",
+  "filter": "#WPO_REPORT",
+  "updated_at": "2026-01-21T09:05:33Z",
+  "reports": [],
+  "error": "X API 402 Payment Required: token tier has no access to this endpoint. Use a paid X API plan/token."
 }
