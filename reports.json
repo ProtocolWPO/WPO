@@ -1,5 +1,29 @@
-{
-  اختبار
-],
-  "error": "X API 402 Payment Required: token tier has no access to this endpoint. Use a paid X API plan/token."
-}
+[
+  {
+    "severity": "high",
+    "date": "2026-01-24",
+    "network": "BSC",
+    "title": "Report #001 — Liquidity Risk / Suspicious Pattern",
+    "summary": "Initial checks suggest elevated risk indicators. Users should verify LP lock, ownership status, and contract permissions before interacting.",
+    "link": "https://bscscan.com/",
+    "linkText": "View on Explorer"
+  },
+  {
+    "severity": "medium",
+    "date": "2026-01-23",
+    "network": "Solana",
+    "title": "Report #002 — Wallet Activity Review",
+    "summary": "Observed repeated clustered transactions in a short window. Further verification recommended with TX links and wallet relationship mapping.",
+    "link": "https://solscan.io/",
+    "linkText": "View on Solscan"
+  },
+  {
+    "severity": "info",
+    "date": "2026-01-22",
+    "network": "Ethereum",
+    "title": "Report #003 — Safety Reminder",
+    "summary": "Reminder: Never trust claims without evidence. Verify contract source, taxes, admin privileges, and distribution concentration.",
+    "link": "https://etherscan.io/",
+    "linkText": "Open Etherscan"
+  }
+]
