@@ -1,19 +1,5 @@
 {
-  "source": "X:@Protocol_WPO",
-  "filter": "#WPO_REPORT",
-  "updated_at": "2026-01-21T09:33:26Z",
-  "reports": [{
-  "id": "market-001",
-  "title_en": "Market Strength Assessment: Smart Accumulation Phase",
-  "title_ar": "",
-  "status_en": "Market remains structurally strong despite short-term volatility",
-  "status_ar": "",
-  "evidence_en": "On-chain metrics and liquidity behavior indicate controlled accumulation, not panic selling.",
-  "evidence_ar": "",
-  "risk": "info",
-  "date": "2026-01-21",
-  "link": "https://www.binance.com/ar/square/profile/whale_breaker"
-}
+  اختبار
 ],
   "error": "X API 402 Payment Required: token tier has no access to this endpoint. Use a paid X API plan/token."
 }
