@@ -332,13 +332,21 @@
       nav::-webkit-scrollbar{ height: 0; }
       .navlink{ padding: 9px 12px; font-size: .86rem; flex: 0 0 auto; }
 
+      /* ✅ FIX: top buttons stacked on mobile (no side-by-side) */
       .actions{
         width: 100%;
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr; /* was 1fr 1fr */
         gap: 10px;
       }
       .btn{ width: 100%; padding: 11px 14px; font-size: .92rem; }
+
+      /* ✅ FIX: lang switch full width + menu centered */
+      .lang-switch{ width:100%; }
+      #langBtn{ width:100%; justify-content:center; }
+      .lang-menu{ left:0; right:0; min-width:unset; }
+      .lang-menu button{ text-align:center; }
+      html[dir="rtl"] .lang-menu button{ text-align:center; }
 
       .hero{
         padding: 18px 14px;
@@ -550,8 +558,12 @@
           <textarea id="details" name="details" required data-i18n-placeholder="ph_details" placeholder="Explain what happened, timeline, and why it is suspicious…"></textarea>
         </div>
 
+        <!-- ✅ Updated buttons per agreement -->
         <div class="form-actions">
           <button class="btn btn-primary" type="submit" data-i18n="btn_send">Prepare Email & Send</button>
+
+          <button class="btn btn-ghost" type="button" id="gmailBtn" data-i18n="btn_gmail">Open Gmail</button>
+          <button class="btn btn-ghost" type="button" id="outlookBtn" data-i18n="btn_outlook">Open Outlook Web</button>
 
           <button class="btn btn-ghost" type="button" id="copyBtn" data-i18n="btn_copy">Copy Report Text</button>
 
