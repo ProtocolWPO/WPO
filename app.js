@@ -68,6 +68,8 @@ const I18N = {
     f_details: "Report Details",
     ph_details: "Explain what happened, timeline, and why it is suspicious…",
     btn_send: "Prepare Email & Send",
+    btn_gmail: "Open Gmail",
+    btn_outlook: "Open Outlook Web",
     btn_copy: "Copy Report Text",
     tip: "Tip: TX links speed up verification.",
     ok_copy: "Copied. You can paste it anywhere.",
@@ -158,6 +160,8 @@ const I18N = {
     f_details: "تفاصيل البلاغ",
     ph_details: "اشرح ما حدث، التسلسل الزمني، ولماذا تعتبره مشبوهًا…",
     btn_send: "تجهيز البريد وإرساله",
+    btn_gmail: "فتح Gmail",
+    btn_outlook: "فتح Outlook Web",
     btn_copy: "نسخ نص البلاغ",
     tip: "نصيحة: روابط المعاملات تسرّع التحقق.",
     ok_copy: "تم النسخ. يمكنك لصقه في أي مكان.",
@@ -246,6 +250,8 @@ const I18N = {
     f_details: "تفصیلات",
     ph_details: "کیا ہوا، ٹائم لائن، اور کیوں مشتبہ ہے…",
     btn_send: "ای میل تیار کریں اور بھیجیں",
+    btn_gmail: "Gmail کھولیں",
+    btn_outlook: "Outlook Web کھولیں",
     btn_copy: "رپورٹ کا متن کاپی کریں",
     tip: "ٹپ: TX لنکس سے تصدیق تیز ہوتی ہے۔",
     ok_copy: "کاپی ہوگیا۔ کہیں بھی پیسٹ کرسکتے ہیں۔",
@@ -334,6 +340,8 @@ const I18N = {
     f_details: "举报详情",
     ph_details: "说明发生了什么、时间线，以及为何可疑…",
     btn_send: "生成邮件并发送",
+    btn_gmail: "打开 Gmail",
+    btn_outlook: "打开 Outlook Web",
     btn_copy: "复制举报文本",
     tip: "提示：TX 链接可加快核验。",
     ok_copy: "已复制，可粘贴到任意位置。",
@@ -412,6 +420,7 @@ function initLang() {
   return normalizeLang(navigator.language || navigator.userLanguage);
 }
 
+// Language dropdown behavior
 function initLangMenu() {
   const btn = document.getElementById("langBtn");
   const menu = document.getElementById("langMenu");
@@ -474,7 +483,6 @@ function buildReportText(lang, data) {
 function mailtoSend(subject, body) {
   const enc = encodeURIComponent;
   const url = `mailto:${TO_EMAIL}?subject=${enc(subject)}&body=${enc(body)}`;
-  // أحياناً أفضل من href في بعض المتصفحات
   window.open(url, "_self");
 }
 
@@ -495,7 +503,6 @@ function initForm() {
   const copyBtn = document.getElementById("copyBtn");
   const gmailBtn = document.getElementById("gmailBtn");
   const outlookBtn = document.getElementById("outlookBtn");
-
   const companyHp = document.getElementById("company");
 
   function getLang() {
@@ -552,7 +559,7 @@ function initForm() {
     copyText(text);
   });
 
-  // Gmail Web
+  // ✅ Gmail Web
   gmailBtn?.addEventListener("click", () => {
     const lang = getLang();
     const data = getData();
@@ -574,7 +581,7 @@ function initForm() {
     window.open(url, "_blank", "noopener");
   });
 
-  // Outlook Web
+  // ✅ Outlook Web
   outlookBtn?.addEventListener("click", () => {
     const lang = getLang();
     const data = getData();
