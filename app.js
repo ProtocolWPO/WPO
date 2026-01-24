@@ -375,7 +375,7 @@ function t(key, lang) {
 function normalizeLang(raw) {
   if (!raw) return "en";
   const low = raw.toLowerCase();
-  const base = low.split("-")[0]; // ar, en, zh
+  const base = low.split("-")[0];
   return SUPPORTED.includes(base) ? base : "en";
 }
 
@@ -388,18 +388,15 @@ function setHtmlLang(lang) {
 function applyI18n(lang) {
   setHtmlLang(lang);
 
-  // update button label to native language name
   const langBtn = document.getElementById("langBtn");
   if (langBtn) langBtn.textContent = LANG_NAMES[lang] || "Language";
 
-  // text nodes
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const key = el.getAttribute("data-i18n");
     if (!key) return;
     el.textContent = t(key, lang);
   });
 
-  // placeholders
   document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
     const key = el.getAttribute("data-i18n-placeholder");
     if (!key) return;
@@ -415,7 +412,6 @@ function initLang() {
   return normalizeLang(navigator.language || navigator.userLanguage);
 }
 
-// Language dropdown behavior
 function initLangMenu() {
   const btn = document.getElementById("langBtn");
   const menu = document.getElementById("langMenu");
@@ -475,10 +471,11 @@ function buildReportText(lang, data) {
   return lines.join("\n");
 }
 
-function mailtoSend(lang, subject, body) {
+function mailtoSend(subject, body) {
   const enc = encodeURIComponent;
   const url = `mailto:${TO_EMAIL}?subject=${enc(subject)}&body=${enc(body)}`;
-  window.location.href = url;
+  // أحياناً أفضل من href في بعض المتصفحات
+  window.open(url, "_self");
 }
 
 // Simple cooldown (prevents spam clicks)
@@ -496,18 +493,48 @@ function initForm() {
   if (!form) return;
 
   const copyBtn = document.getElementById("copyBtn");
+  const gmailBtn = document.getElementById("gmailBtn");
+  const outlookBtn = document.getElementById("outlookBtn");
+
   const companyHp = document.getElementById("company");
-  const reportType = document.getElementById("reportType");
-  const details = document.getElementById("details");
-  const address = document.getElementById("address");
-  const links = document.getElementById("links");
+
+  function getLang() {
+    return document.documentElement.getAttribute("data-lang") || "en";
+  }
+
+  function getData() {
+    return Object.fromEntries(new FormData(form).entries());
+  }
+
+  function validate(data) {
+    // honeypot
+    if (companyHp && companyHp.value.trim() !== "") return { ok: false, box: null };
+
+    // required: type + details
+    if (!data.reportType || !data.details || String(data.details).trim().length < 3) {
+      return { ok: false, box: "warnBox" };
+    }
+
+    // required: address OR links
+    const hasAddr = (data.address || "").trim().length > 3;
+    const hasLinks = (data.links || "").trim().length > 3;
+    if (!hasAddr && !hasLinks) {
+      return { ok: false, box: "badBox" };
+    }
+
+    // cooldown
+    if (!canSendNow()) {
+      return { ok: false, box: "cooldownBox" };
+    }
+
+    return { ok: true, box: null };
+  }
 
   async function copyText(text) {
     try {
       await navigator.clipboard.writeText(text);
       showBox("okBox");
     } catch {
-      // fallback
       const ta = document.createElement("textarea");
       ta.value = text;
       document.body.appendChild(ta);
@@ -519,46 +546,71 @@ function initForm() {
   }
 
   copyBtn?.addEventListener("click", () => {
-    const lang = document.documentElement.getAttribute("data-lang") || "en";
-    const data = Object.fromEntries(new FormData(form).entries());
+    const lang = getLang();
+    const data = getData();
     const text = buildReportText(lang, data);
     copyText(text);
   });
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+  // Gmail Web
+  gmailBtn?.addEventListener("click", () => {
+    const lang = getLang();
+    const data = getData();
 
-    const lang = document.documentElement.getAttribute("data-lang") || "en";
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    // honeypot
-    if (companyHp && companyHp.value.trim() !== "") return;
-
-    // required: type + details
-    if (!data.reportType || !data.details || String(data.details).trim().length < 3) {
-      showBox("warnBox");
-      return;
-    }
-
-    // required: address OR links
-    const hasAddr = (data.address || "").trim().length > 3;
-    const hasLinks = (data.links || "").trim().length > 3;
-    if (!hasAddr && !hasLinks) {
-      showBox("badBox");
-      return;
-    }
-
-    // cooldown
-    if (!canSendNow()) {
-      showBox("cooldownBox");
-      return;
-    }
+    const v = validate(data);
+    if (!v.ok) { if (v.box) showBox(v.box); return; }
 
     const subject = `${t("email_subject_prefix", lang)} ${data.reportType}`;
     const body = buildReportText(lang, data);
 
     markSentNow();
-    mailtoSend(lang, subject, body);
+
+    const url =
+      "https://mail.google.com/mail/?view=cm&fs=1" +
+      "&to=" + encodeURIComponent(TO_EMAIL) +
+      "&su=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(body);
+
+    window.open(url, "_blank", "noopener");
+  });
+
+  // Outlook Web
+  outlookBtn?.addEventListener("click", () => {
+    const lang = getLang();
+    const data = getData();
+
+    const v = validate(data);
+    if (!v.ok) { if (v.box) showBox(v.box); return; }
+
+    const subject = `${t("email_subject_prefix", lang)} ${data.reportType}`;
+    const body = buildReportText(lang, data);
+
+    markSentNow();
+
+    const url =
+      "https://outlook.office.com/mail/deeplink/compose" +
+      "?to=" + encodeURIComponent(TO_EMAIL) +
+      "&subject=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(body);
+
+    window.open(url, "_blank", "noopener");
+  });
+
+  // Default submit => mailto
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const lang = getLang();
+    const data = getData();
+
+    const v = validate(data);
+    if (!v.ok) { if (v.box) showBox(v.box); return; }
+
+    const subject = `${t("email_subject_prefix", lang)} ${data.reportType}`;
+    const body = buildReportText(lang, data);
+
+    markSentNow();
+    mailtoSend(subject, body);
   });
 }
 
