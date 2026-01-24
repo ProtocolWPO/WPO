@@ -113,6 +113,35 @@
       font-weight:800;
     }
     .btn-ghost{background: rgba(10,22,48,.55)}
+
+    /* Language dropdown */
+    .lang-switch{position:relative;display:inline-block}
+    .lang-menu{
+      position:absolute; top:44px; right:0;
+      min-width:160px;
+      display:none;
+      list-style:none;
+      margin:0; padding:6px;
+      border-radius:12px;
+      border:1px solid rgba(212,175,55,.18);
+      background: rgba(5,7,15,.96);
+      box-shadow: 0 18px 45px rgba(0,0,0,.55);
+      z-index:999;
+    }
+    .lang-menu.show{display:block}
+    .lang-menu button{
+      width:100%;
+      text-align:left;
+      padding:10px 12px;
+      border:0;
+      background:transparent;
+      color:var(--text);
+      cursor:pointer;
+      border-radius:10px;
+    }
+    .lang-menu button:hover{background:rgba(255,255,255,.08)}
+    html[dir="rtl"] .lang-menu button{ text-align:right; }
+
     @media (max-width: 980px){
       header{flex-direction:column;align-items:stretch}
       .brand-title h1{white-space:normal}
@@ -280,27 +309,19 @@
       text-underline-offset: 3px;
     }
 
-    /* Language visibility */
-    [data-lang-text]{display:none}
-    html[data-lang="en"] [data-lang-text="en"]{display:block}
-    html[data-lang="ar"] [data-lang-text="ar"]{display:block}
-
     /* Honeypot (anti-bot) */
     .hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
 
-    /* ===================== Mobile-First Upgrade Pack ===================== */
+    /* Mobile pack */
     @media (max-width: 720px){
       .container{ padding: 14px 12px 56px; }
-
       .topbar{ padding: 10px 0; }
       header{ padding: 12px 12px; gap: 10px; }
-
       .brand{ min-width: 0; }
       .logo-wrap{ width: 40px; height: 40px; }
       .brand-title h1{ font-size: .98rem; letter-spacing: .10em; }
       .brand-title p{ font-size: .86rem; }
 
-      /* Scrollable pill nav */
       nav{
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
@@ -311,7 +332,6 @@
       nav::-webkit-scrollbar{ height: 0; }
       .navlink{ padding: 9px 12px; font-size: .86rem; flex: 0 0 auto; }
 
-      /* Actions as grid buttons */
       .actions{
         width: 100%;
         display: grid;
@@ -319,9 +339,7 @@
         gap: 10px;
       }
       .btn{ width: 100%; padding: 11px 14px; font-size: .92rem; }
-      #langToggle{ width: 100%; }
 
-      /* Hero mobile */
       .hero{
         padding: 18px 14px;
         border-radius: 20px;
@@ -330,20 +348,15 @@
       }
       .hero h2{ font-size: 1.22rem; letter-spacing: .10em; }
       .hero p{ font-size: .98rem; }
-
       .chips{ gap: 8px; }
       .chip{ font-size: .82rem; padding: 7px 12px; }
 
-      /* Sections */
       section{ margin-top: 12px; padding: 18px 14px; border-radius: 18px; }
       section h3{ font-size: .98rem; margin-bottom: 10px; }
-
-      /* Make all grids single-column on mobile */
       .grid{ grid-template-columns: 1fr !important; gap: 12px; }
       .card{ padding: 14px; border-radius: 16px; }
       .card p{ font-size: .94rem; }
 
-      /* Form: bigger + stacked */
       .form-grid{ grid-template-columns: 1fr !important; gap: 10px; }
       input, select, textarea{ padding: 13px 12px; border-radius: 14px; font-size: 1rem; }
       textarea{ min-height: 140px; }
@@ -356,7 +369,6 @@
       }
       .small{ font-size: .9rem; }
 
-      /* Reports card layout */
       .report-top{
         flex-direction: column;
         align-items: flex-start;
@@ -364,7 +376,6 @@
       }
       .meta{ font-size: .9rem; }
       .badge{ font-size: .8rem; padding: 7px 12px; }
-
       footer{ font-size: .86rem; }
       .footer-links{ gap: 12px; }
     }
@@ -381,32 +392,32 @@
           </div>
           <div class="brand-title">
             <h1>Whale Protocol Official</h1>
-            <p data-lang-text="en">Market Integrity • Fraud Reporting • Investor Protection</p>
-            <p data-lang-text="ar">نزاهة السوق • بلاغات الاحتيال • حماية المستثمر</p>
+            <p data-i18n="tagline">Market Integrity • Fraud Reporting • Investor Protection</p>
           </div>
         </div>
 
         <nav aria-label="Sections">
-          <a class="navlink" href="#home" data-lang-text="en">Home</a>
-          <a class="navlink" href="#home" data-lang-text="ar">الرئيسية</a>
-
-          <a class="navlink" href="#categories" data-lang-text="en">Categories</a>
-          <a class="navlink" href="#categories" data-lang-text="ar">الفئات</a>
-
-          <a class="navlink" href="#submit" data-lang-text="en">Submit Report</a>
-          <a class="navlink" href="#submit" data-lang-text="ar">إرسال بلاغ</a>
-
-          <a class="navlink" href="#reports" data-lang-text="en">Published Reports</a>
-          <a class="navlink" href="#reports" data-lang-text="ar">التقارير</a>
-
-          <a class="navlink" href="#contact" data-lang-text="en">Contact</a>
-          <a class="navlink" href="#contact" data-lang-text="ar">تواصل</a>
+          <a class="navlink" href="#home" data-i18n="nav_home">Home</a>
+          <a class="navlink" href="#categories" data-i18n="nav_categories">Categories</a>
+          <a class="navlink" href="#submit" data-i18n="nav_submit">Submit Report</a>
+          <a class="navlink" href="#reports" data-i18n="nav_reports">Published Reports</a>
+          <a class="navlink" href="#contact" data-i18n="nav_contact">Contact</a>
         </nav>
 
         <div class="actions">
-          <button class="btn btn-ghost" id="langToggle" type="button" aria-label="Toggle language">AR</button>
-          <a class="btn" href="https://x.com/Protocol_WPO" target="_blank" rel="noopener">Official X</a>
-          <a class="btn btn-primary" href="mailto:whalebreaker2025@gmail.com">Contact Us</a>
+          <!-- Language switcher (names only) -->
+          <div class="lang-switch">
+            <button class="btn btn-ghost" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false">English</button>
+            <ul id="langMenu" class="lang-menu" role="listbox" aria-label="Language menu">
+              <li><button type="button" data-lang="en">English</button></li>
+              <li><button type="button" data-lang="ar">العربية</button></li>
+              <li><button type="button" data-lang="ur">اردو</button></li>
+              <li><button type="button" data-lang="zh">中文</button></li>
+            </ul>
+          </div>
+
+          <a class="btn" href="https://x.com/Protocol_WPO" target="_blank" rel="noopener" data-i18n="official_x">Official X</a>
+          <a class="btn btn-primary" href="mailto:whalebreaker2025@gmail.com" data-i18n="contact_us">Contact Us</a>
         </div>
       </header>
     </div>
@@ -417,106 +428,76 @@
     <!-- HERO -->
     <div class="hero" id="home">
       <div>
-        <h2 data-lang-text="en">Market Integrity Initiative</h2>
-        <h2 data-lang-text="ar">مبادرة نزاهة السوق</h2>
+        <h2 data-i18n="hero_title">Market Integrity Initiative</h2>
 
-        <p data-lang-text="en">
+        <p data-i18n="hero_desc">
           Whale Protocol Official is an independent community initiative focused on exposing fraud,
           reporting suspicious activity, and restoring trust in digital asset markets through transparency
           and accountability.
         </p>
-        <p data-lang-text="ar">
-          Whale Protocol Official مبادرة مجتمعية مستقلة تهدف إلى كشف الاحتيال، رصد الأنشطة المشبوهة،
-          وإعادة الثقة لسوق الأصول الرقمية عبر الشفافية والمساءلة.
-        </p>
 
         <div class="chips">
-          <span class="chip accent" data-lang-text="en">Verified Alerts</span>
-          <span class="chip accent" data-lang-text="ar">تنبيهات موثقة</span>
-
-          <span class="chip" data-lang-text="en">Evidence-Based</span>
-          <span class="chip" data-lang-text="ar">مبني على الأدلة</span>
-
-          <span class="chip" data-lang-text="en">Community Reporting</span>
-          <span class="chip" data-lang-text="ar">بلاغات المجتمع</span>
+          <span class="chip accent" data-i18n="chip_verified">Verified Alerts</span>
+          <span class="chip" data-i18n="chip_evidence">Evidence-Based</span>
+          <span class="chip" data-i18n="chip_community">Community Reporting</span>
         </div>
       </div>
 
       <div class="hero-side">
         <div class="row">
-          <span class="k" data-lang-text="en">Official X</span>
-          <span class="k" data-lang-text="ar">حساب X الرسمي</span>
+          <span class="k" data-i18n="k_official_x">Official X</span>
           <span class="v"><a href="https://x.com/Protocol_WPO" target="_blank" rel="noopener">@Protocol_WPO</a></span>
         </div>
         <div class="divider"></div>
         <div class="row">
-          <span class="k" data-lang-text="en">Email</span>
-          <span class="k" data-lang-text="ar">البريد</span>
+          <span class="k" data-i18n="k_email">Email</span>
           <span class="v"><a href="mailto:whalebreaker2025@gmail.com">whalebreaker2025@gmail.com</a></span>
         </div>
         <div class="divider"></div>
         <div class="row">
-          <span class="k" data-lang-text="en">Policy</span>
-          <span class="k" data-lang-text="ar">السياسة</span>
-          <span class="v" data-lang-text="en">No accusations without evidence</span>
-          <span class="v" data-lang-text="ar">لا اتهامات بدون أدلة</span>
+          <span class="k" data-i18n="k_policy">Policy</span>
+          <span class="v" data-i18n="policy_value">No accusations without evidence</span>
         </div>
       </div>
     </div>
 
     <!-- CATEGORIES -->
     <section id="categories">
-      <h3 data-lang-text="en">Community Reporting Categories</h3>
-      <h3 data-lang-text="ar">فئات البلاغات</h3>
+      <h3 data-i18n="cat_title">Community Reporting Categories</h3>
 
       <div class="grid">
         <div class="card">
-          <h4 data-lang-text="en">Report a Fake Project</h4>
-          <h4 data-lang-text="ar">الإبلاغ عن مشروع وهمي</h4>
-          <p data-lang-text="en">Misleading claims, false promises, lack of transparency.</p>
-          <p data-lang-text="ar">ادعاءات مضللة، وعود كاذبة، غياب الشفافية.</p>
+          <h4 data-i18n="cat1_h">Report a Fake Project</h4>
+          <p data-i18n="cat1_p">Misleading claims, false promises, lack of transparency.</p>
         </div>
 
         <div class="card">
-          <h4 data-lang-text="en">Report a Suspicious Wallet</h4>
-          <h4 data-lang-text="ar">الإبلاغ عن محفظة مشبوهة</h4>
-          <p data-lang-text="en">Manipulation patterns, abnormal movements, coordinated dumping.</p>
-          <p data-lang-text="ar">أنماط تلاعب، تحركات غير طبيعية، تصريف منسق.</p>
+          <h4 data-i18n="cat2_h">Report a Suspicious Wallet</h4>
+          <p data-i18n="cat2_p">Manipulation patterns, abnormal movements, coordinated dumping.</p>
         </div>
 
         <div class="card">
-          <h4 data-lang-text="en">Report a Fraudulent Token</h4>
-          <h4 data-lang-text="ar">الإبلاغ عن عملة احتيالية</h4>
-          <p data-lang-text="en">Rug-pull signals, deceptive promotion, anonymous teams.</p>
-          <p data-lang-text="ar">مؤشرات سحب السيولة، ترويج مخادع، فرق مجهولة.</p>
+          <h4 data-i18n="cat3_h">Report a Fraudulent Token</h4>
+          <p data-i18n="cat3_p">Rug-pull signals, deceptive promotion, anonymous teams.</p>
         </div>
 
         <div class="card">
-          <h4 data-lang-text="en">Report a Malicious Address</h4>
-          <h4 data-lang-text="ar">الإبلاغ عن عنوان مسمّم</h4>
-          <p data-lang-text="en">Addresses linked to scams, exploits, or investor targeting.</p>
-          <p data-lang-text="ar">عناوين مرتبطة بالنصب أو الاستغلال أو استهداف المستثمرين.</p>
+          <h4 data-i18n="cat4_h">Report a Malicious Address</h4>
+          <p data-i18n="cat4_p">Addresses linked to scams, exploits, or investor targeting.</p>
         </div>
       </div>
 
-      <div class="note" data-lang-text="en">
+      <div class="note" data-i18n="cat_note">
         We do not publish accusations without evidence. Reports are reviewed and verified before any public alert is issued.
-      </div>
-      <div class="note" data-lang-text="ar">
-        لا ننشر اتهامات دون أدلة. تتم مراجعة البلاغات والتحقق منها قبل إصدار أي تنبيه علني.
       </div>
     </section>
 
     <!-- FORM -->
     <section id="submit">
-      <h3 data-lang-text="en">Submit a Report</h3>
-      <h3 data-lang-text="ar">إرسال بلاغ</h3>
+      <h3 data-i18n="form_title">Submit a Report</h3>
 
-      <p class="small" data-lang-text="en">
+      <p class="small" data-i18n="form_hint">
         Your report will be prepared as an email draft to our official inbox. Provide clear evidence and explorer links when possible.
-      </p>
-      <p class="small" data-lang-text="ar">
-        سيتم تجهيز البلاغ كمسودة بريد لإرساله إلى بريدنا الرسمي. يُفضل إرفاق أدلة وروابط المستكشف إن وجدت.
       </p>
 
       <form id="reportForm" novalidate>
@@ -527,127 +508,89 @@
 
         <div class="form-grid">
           <div>
-            <label for="reportType" data-lang-text="en">Report Type</label>
-            <label for="reportType" data-lang-text="ar">نوع البلاغ</label>
+            <label for="reportType" data-i18n="f_type">Report Type</label>
             <select id="reportType" name="reportType" required>
-              <option value="" id="reportTypePlaceholder">Select…</option>
-              <option value="Fake Project">Fake Project / مشروع وهمي</option>
-              <option value="Suspicious Wallet">Suspicious Wallet / محفظة مشبوهة</option>
-              <option value="Fraud Token">Fraudulent Token / عملة احتيالية</option>
-              <option value="Malicious Address">Malicious Address / عنوان مسمّم</option>
-              <option value="Other">Other / أخرى</option>
+              <option value="" id="reportTypePlaceholder" data-i18n="f_select">Select…</option>
+              <option value="Fake Project" data-i18n="opt_fake">Fake Project</option>
+              <option value="Suspicious Wallet" data-i18n="opt_wallet">Suspicious Wallet</option>
+              <option value="Fraud Token" data-i18n="opt_token">Fraudulent Token</option>
+              <option value="Malicious Address" data-i18n="opt_address">Malicious Address</option>
+              <option value="Other" data-i18n="opt_other">Other</option>
             </select>
           </div>
 
           <div>
-            <label for="network" data-lang-text="en">Network / Chain</label>
-            <label for="network" data-lang-text="ar">الشبكة</label>
-            <input id="network" name="network" type="text" placeholder="e.g., Ethereum, BSC, Solana, GateChain" />
+            <label for="network" data-i18n="f_chain">Network / Chain</label>
+            <input id="network" name="network" type="text" data-i18n-placeholder="ph_chain" placeholder="e.g., Ethereum, BSC, Solana, GateChain" />
           </div>
 
           <div>
-            <label for="entity" data-lang-text="en">Project / Token / Wallet Name (optional)</label>
-            <label for="entity" data-lang-text="ar">اسم المشروع/العملة/المحفظة (اختياري)</label>
-            <input id="entity" name="entity" type="text" placeholder="Name or ticker" />
+            <label for="entity" data-i18n="f_name">Project / Token / Wallet Name (optional)</label>
+            <input id="entity" name="entity" type="text" data-i18n-placeholder="ph_name" placeholder="Name or ticker" />
           </div>
 
           <div>
-            <label for="address" data-lang-text="en">Suspicious Address / Contract</label>
-            <label for="address" data-lang-text="ar">العنوان/العقد المشبوه</label>
-            <input id="address" name="address" type="text" placeholder="0x… / Solana / etc." />
+            <label for="address" data-i18n="f_addr">Suspicious Address / Contract</label>
+            <input id="address" name="address" type="text" data-i18n-placeholder="ph_addr" placeholder="0x… / Solana / etc." />
           </div>
 
           <div>
-            <label for="links" data-lang-text="en">Evidence Links (Explorer, TX, Screenshots)</label>
-            <label for="links" data-lang-text="ar">روابط الأدلة (مستكشف/معاملات/صور)</label>
-            <input id="links" name="links" type="text" placeholder="Paste URLs (separate with commas)" />
+            <label for="links" data-i18n="f_links">Evidence Links (Explorer, TX, Screenshots)</label>
+            <input id="links" name="links" type="text" data-i18n-placeholder="ph_links" placeholder="Paste URLs (separate with commas)" />
           </div>
 
           <div>
-            <label for="contactField" data-lang-text="en">Your Contact (optional)</label>
-            <label for="contactField" data-lang-text="ar">وسيلة تواصل (اختياري)</label>
-            <input id="contactField" name="contactField" type="text" placeholder="Email / X handle (optional)" />
+            <label for="contactField" data-i18n="f_contact">Your Contact (optional)</label>
+            <input id="contactField" name="contactField" type="text" data-i18n-placeholder="ph_contact" placeholder="Email / X handle (optional)" />
           </div>
         </div>
 
         <div style="margin-top:12px;">
-          <label for="details" data-lang-text="en">Report Details</label>
-          <label for="details" data-lang-text="ar">تفاصيل البلاغ</label>
-          <textarea id="details" name="details" required placeholder="Explain what happened, timeline, and why it is suspicious…"></textarea>
+          <label for="details" data-i18n="f_details">Report Details</label>
+          <textarea id="details" name="details" required data-i18n-placeholder="ph_details" placeholder="Explain what happened, timeline, and why it is suspicious…"></textarea>
         </div>
 
         <div class="form-actions">
-          <button class="btn btn-primary" type="submit">
-            <span data-lang-text="en">Prepare Email & Send</span>
-            <span data-lang-text="ar">تجهيز البريد وإرساله</span>
-          </button>
+          <button class="btn btn-primary" type="submit" data-i18n="btn_send">Prepare Email & Send</button>
 
-          <button class="btn btn-ghost" type="button" id="copyBtn">
-            <span data-lang-text="en">Copy Report Text</span>
-            <span data-lang-text="ar">نسخ نص البلاغ</span>
-          </button>
+          <button class="btn btn-ghost" type="button" id="copyBtn" data-i18n="btn_copy">Copy Report Text</button>
 
-          <span class="small" data-lang-text="en">Tip: TX links speed up verification.</span>
-          <span class="small" data-lang-text="ar">نصيحة: روابط المعاملات تسرّع التحقق.</span>
+          <span class="small" data-i18n="tip">Tip: TX links speed up verification.</span>
         </div>
-        <div class="status ok" id="okBox" data-lang-text="en">When Copied. You can paste it anywhere.</div>
-        <div class="status ok" id="okBoxAr" data-lang-text="ar">عند النسخ. يمكنك لصقه في أي مكان.</div>
 
-        <div class="status warn" id="warnBox" data-lang-text="en">Please choose a Report Type and add Details.</div>
-        <div class="status warn" id="warnBoxAr" data-lang-text="ar">يرجى اختيار نوع البلاغ وإضافة التفاصيل.</div>
-
-        <div class="status bad" id="badBox" data-lang-text="en">Please provide an Address or Evidence Links (at least one).</div>
-        <div class="status bad" id="badBoxAr" data-lang-text="ar">يرجى إدخال العنوان أو روابط الأدلة (واحد على الأقل).</div>
-
-        <div class="status warn" id="cooldownBox" data-lang-text="en">Please wait a bit before sending another report.</div>
-        <div class="status warn" id="cooldownBoxAr" data-lang-text="ar">يرجى الانتظار قليلًا قبل إرسال بلاغ جديد.</div>
+        <div class="status ok" id="okBox" data-i18n="ok_copy">Copied. You can paste it anywhere.</div>
+        <div class="status warn" id="warnBox" data-i18n="warn_need">Please choose a Report Type and add Details.</div>
+        <div class="status bad" id="badBox" data-i18n="bad_need">Please provide an Address or Evidence Links (at least one).</div>
+        <div class="status warn" id="cooldownBox" data-i18n="cooldown">Please wait a bit before sending another report.</div>
       </form>
     </section>
 
     <!-- PUBLISHED REPORTS -->
     <section id="reports">
-      <h3 data-lang-text="en">Published Reports</h3>
-      <h3 data-lang-text="ar">التقارير المنشورة</h3>
+      <h3 data-i18n="pub_title">Published Reports</h3>
 
-      <p class="small" data-lang-text="en">These cards load from <code>reports.json</code>. Edit that file to publish real verified alerts.</p>
-      <p class="small" data-lang-text="ar">هذه البطاقات تُقرأ من ملف <code>reports.json</code>. عدّل الملف لنشر التنبيهات الموثقة.</p>
+      <p class="small" data-i18n="pub_hint">These cards load from reports.json. Edit that file to publish real verified alerts.</p>
 
       <div class="grid" id="reportsGrid"></div>
 
-      <div class="note" data-lang-text="en">
+      <div class="note" data-i18n="pub_note">
         Disclaimer: Whale Protocol Official does not provide financial advice or price predictions. We publish safety-focused reports to reduce risk and support responsible investing.
-      </div>
-      <div class="note" data-lang-text="ar">
-        تنبيه: Whale Protocol Official لا يقدم نصائح استثمارية أو توقعات سعرية. ننشر تقارير توعوية لحماية المستثمر وتقليل المخاطر وتعزيز الاستثمار المسؤول.
       </div>
     </section>
 
     <!-- CONTACT -->
     <section id="contact">
-      <h3 data-lang-text="en">Official Communication</h3>
-      <h3 data-lang-text="ar">التواصل الرسمي</h3>
+      <h3 data-i18n="contact_title">Official Communication</h3>
 
-      <p data-lang-text="en">
-        Follow verified alerts on X:
-        <a href="https://x.com/Protocol_WPO" target="_blank" rel="noopener" style="color:var(--accent2);text-decoration:underline;text-underline-offset:3px;">
-          https://x.com/Protocol_WPO
-        </a>
-      </p>
-      <p data-lang-text="ar">
-        تابع التنبيهات الموثقة على X:
+      <p>
+        <span data-i18n="follow_x">Follow verified alerts on X:</span>
         <a href="https://x.com/Protocol_WPO" target="_blank" rel="noopener" style="color:var(--accent2);text-decoration:underline;text-underline-offset:3px;">
           https://x.com/Protocol_WPO
         </a>
       </p>
 
-      <p data-lang-text="en" style="margin-top:10px;">
-        Contact us:
-        <a href="mailto:whalebreaker2025@gmail.com" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">
-          whalebreaker2025@gmail.com
-        </a>
-      </p>
-      <p data-lang-text="ar" style="margin-top:10px;">
-        راسلنا:
+      <p style="margin-top:10px;">
+        <span data-i18n="contact_line">Contact us:</span>
         <a href="mailto:whalebreaker2025@gmail.com" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">
           whalebreaker2025@gmail.com
         </a>
@@ -655,12 +598,12 @@
     </section>
 
     <footer>
-      © <span style="color:var(--accent);font-weight:800">Whale Protocol Official</span> — Community Market Integrity Initiative
+      © <span style="color:var(--accent);font-weight:800">Whale Protocol Official</span> — <span data-i18n="footer_tag">Community Market Integrity Initiative</span>
       <div class="footer-links">
         <a href="https://x.com/Protocol_WPO" target="_blank" rel="noopener">X</a>
-        <a href="mailto:whalebreaker2025@gmail.com">Contact</a>
-        <a href="#submit">Submit Report</a>
-        <a href="#reports">Reports</a>
+        <a href="mailto:whalebreaker2025@gmail.com" data-i18n="footer_contact">Contact</a>
+        <a href="#submit" data-i18n="footer_submit">Submit Report</a>
+        <a href="#reports" data-i18n="footer_reports">Reports</a>
       </div>
     </footer>
 
