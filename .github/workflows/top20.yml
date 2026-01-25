@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -35,25 +35,18 @@ jobs:
         run: python scripts/top20_generate.py
 
       - name: Commit & push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
           git config user.name "top20-bot"
           git config user.email "top20-bot@users.noreply.github.com"
 
-          # Always sync first to avoid push conflicts
           git pull --rebase origin main
 
           git add data/top20.json
-
-          # If no changes, exit cleanly
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
 
           git commit -m "update top20"
-
-          # Push
           git push origin HEAD:main
