@@ -3,10 +3,14 @@ name: Update Top 20 Coins
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/30 * * * *"   # every 30 minutes (UTC)
 
 permissions:
   contents: write
+
+concurrency:
+  group: top20-update
+  cancel-in-progress: true
 
 jobs:
   update:
@@ -30,6 +34,17 @@ jobs:
         run: |
           git config user.name "top20-bot"
           git config user.email "top20-bot@users.noreply.github.com"
+
           git add data/top20.json
-          git commit -m "update top20" || exit 0
-          git push
+
+          # If no changes, exit cleanly
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "update top20"
+
+          # Handle possible updates from other runs before pushing
+          git pull --rebase origin main || true
+          git push origin HEAD:main
