@@ -11,8 +11,8 @@
   let sortKey = "rank";
   let sortDir = "asc";
 
-  const fmtPrice = new Intl.NumberFormat(undefined, { maximumFractionDigits: 8 });
-  const fmtUSD = new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 2 });
+  const fmtPrice = new Intl.NumberFormat("en-US", { maximumFractionDigits: 8 });
+const fmtUSD = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 2 });
 
   function compact(n){
     n = Number(n);
