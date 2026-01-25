@@ -3,7 +3,7 @@ name: Update Top 20 Coins
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0/30 * * * *"   # every 30 minutes (UTC)
+    - cron: "*/30 * * * *"   # every 30 minutes (UTC)
 
 permissions:
   contents: write
@@ -16,14 +16,18 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install deps
-        run: pip install requests
+        run: pip install --no-cache-dir requests
 
       - name: Generate data/top20.json
         env:
@@ -31,9 +35,15 @@ jobs:
         run: python scripts/top20_generate.py
 
       - name: Commit & push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -e
           git config user.name "top20-bot"
           git config user.email "top20-bot@users.noreply.github.com"
+
+          # Always sync first to avoid push conflicts
+          git pull --rebase origin main
 
           git add data/top20.json
 
@@ -45,6 +55,5 @@ jobs:
 
           git commit -m "update top20"
 
-          # Handle possible updates from other runs before pushing
-          git pull --rebase origin main || true
+          # Push
           git push origin HEAD:main
