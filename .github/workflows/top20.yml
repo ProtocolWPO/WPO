@@ -1,0 +1,35 @@
+name: Update Top 20 Coins
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"   # كل 4 ساعات (UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Generate data/top20.json
+        env:
+          CMC_KEY: ${{ secrets.CMC_KEY }}
+        run: python scripts/top20_generate.py
+
+      - name: Commit & push
+        run: |
+          git config user.name "top20-bot"
+          git config user.email "top20-bot@users.noreply.github.com"
+          git add data/top20.json
+          git commit -m "update top20" || exit 0
+          git push
