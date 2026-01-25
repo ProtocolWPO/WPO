@@ -606,40 +606,57 @@
         </a>
       </p>
     </section>
-<section style="margin:24px 0; padding:16px; border:1px solid rgba(255,255,255,.1); border-radius:12px">
-  <h2 style="margin:0 0 10px 0">Top 20 Coins (Volume + Liquidity)</h2>
-  <div id="top20-meta" style="opacity:.8; margin-bottom:10px"></div>
-  <ol id="top20-list" style="line-height:1.8; margin:0; padding-left:20px"></ol>
+<section class="wpo-top20" id="top20-widget">
+  <div class="wpo-top20__glow"></div>
+
+  <header class="wpo-top20__header">
+    <div>
+      <h2 class="wpo-top20__title">Top 20 Coins</h2>
+      <p class="wpo-top20__subtitle">Ranked by Volume + Liquidity activity</p>
+    </div>
+
+    <div class="wpo-top20__meta">
+      <div class="wpo-top20__pill">
+        <span class="dot"></span>
+        <span id="top20-updated">Updating…</span>
+      </div>
+      <div class="wpo-top20__search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 18a8 8 0 1 1 5.293-14.293A8 8 0 0 1 10 18Zm11 3-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="top20-q" type="search" placeholder="Search symbol or name…" autocomplete="off" />
+      </div>
+    </div>
+  </header>
+
+  <div class="wpo-top20__tableWrap">
+    <table class="wpo-top20__table" aria-label="Top 20 coins table">
+      <thead>
+        <tr>
+          <th data-sort="rank">#</th>
+          <th data-sort="coin">Coin</th>
+          <th class="num" data-sort="volume_24h">Vol 24h</th>
+          <th class="num" data-sort="market_cap">MCap</th>
+          <th class="num" data-sort="price">Price</th>
+          <th class="num" data-sort="vol_mcap_ratio">V/M</th>
+          <th class="barcol">Activity</th>
+        </tr>
+      </thead>
+      <tbody id="top20-body">
+        <!-- rows injected -->
+      </tbody>
+    </table>
+
+    <div class="wpo-top20__loading" id="top20-loading">
+      <div class="shimmer"></div>
+      <div class="shimmer"></div>
+      <div class="shimmer"></div>
+    </div>
+  </div>
+
+  <footer class="wpo-top20__footer">
+    <span class="muted">Source: CoinMarketCap</span>
+    <span class="muted" id="top20-count"></span>
+  </footer>
 </section>
-
-<script>
-function fmt(n){
-  n = Number(n);
-  if (!isFinite(n)) return "-";
-  if (n >= 1e9) return (n/1e9).toFixed(2) + "B";
-  if (n >= 1e6) return (n/1e6).toFixed(2) + "M";
-  if (n >= 1e3) return (n/1e3).toFixed(2) + "K";
-  return n.toFixed(2);
-}
-
-async function loadTop20(){
-  const res = await fetch("./data/top20.json?v=" + Date.now());
-  const data = await res.json();
-
-  document.getElementById("top20-meta").textContent =
-    "Updated (UTC): " + data.updated_utc;
-
-  const list = document.getElementById("top20-list");
-  list.innerHTML = "";
-
-  data.items.forEach(x => {
-    const li = document.createElement("li");
-    li.innerHTML = `<b>${x.symbol}</b> — Vol(24h): ${fmt(x.volume_24h)} — MCap: ${fmt(x.market_cap)} — V/M: ${(x.vol_mcap_ratio*100).toFixed(2)}%`;
-    list.appendChild(li);
-  });
-}
-loadTop20();
-</script>
 
     <footer>
       © <span style="color:var(--accent);font-weight:800">Whale Protocol Official</span> — <span data-i18n="footer_tag">Community Market Integrity Initiative</span>
