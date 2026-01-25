@@ -1,5 +1,4 @@
 name: Update Top 20 Coins
-
 on:
   schedule:
     - cron: "7,37 * * * *"
