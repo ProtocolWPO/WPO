@@ -2,8 +2,7 @@ name: Update Top 20 Coins
 
 on:
   schedule:
-    - cron: "0 */4 * * *"   # كل 4 ساعات (UTC)
-  workflow_dispatch:
+    - cron: "7,37 * * * *"
 
 permissions:
   contents: write
