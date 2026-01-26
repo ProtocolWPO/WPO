@@ -1,6 +1,5 @@
 name: Update Top 20 Coins
 on:
-  workflow_dispatch:
   schedule:
     - cron: "*/30 * * * *"   # every 30 minutes (UTC)
 permissions:
