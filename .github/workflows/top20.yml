@@ -16,20 +16,11 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # ✅ Sync repo FIRST (before generating files)
-      - name: Sync with remote
-        run: |
-          git config user.name "top20-bot"
-          git config user.email "top20-bot@users.noreply.github.com"
-          git pull --rebase origin main
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -44,12 +35,12 @@ jobs:
       - name: Commit & push
         run: |
           set -e
+          git config user.name "top20-bot"
+          git config user.email "top20-bot@users.noreply.github.com"
           git add data/top20.json
-
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
-
           git commit -m "update top20"
-          git push origin HEAD:main
+          git push
