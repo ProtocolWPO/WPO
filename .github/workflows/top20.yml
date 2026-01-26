@@ -3,44 +3,35 @@ name: Update Top 20 Coins
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/30 * * * *"  # every 30 minutes (UTC)
 
 permissions:
   contents: write
-
-concurrency:
-  group: top20-update
-  cancel-in-progress: true
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install deps
         run: pip install --no-cache-dir requests
 
-      - name: Generate data/top20.json
+      - name: Generate top20.json
         env:
           CMC_KEY: ${{ secrets.CMC_KEY }}
         run: python scripts/top20_generate.py
 
-      - name: Commit & push
+      - name: Commit and push if changed
         run: |
-          set -e
-          git config user.name "top20-bot"
-          git config user.email "top20-bot@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/top20.json
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
-          git commit -m "update top20"
+          git diff --staged --quiet || git commit -m "chore: update top20"
           git push
