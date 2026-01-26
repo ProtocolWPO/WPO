@@ -1,17 +1,13 @@
 name: Update Top 20 Coins
-
 on:
   workflow_dispatch:
   schedule:
     - cron: "*/30 * * * *"   # every 30 minutes (UTC)
-
 permissions:
   contents: write
-
 concurrency:
   group: top20-update
   cancel-in-progress: true
-
 jobs:
   update:
     runs-on: ubuntu-latest
