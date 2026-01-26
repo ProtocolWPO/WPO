@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://protocolwpo.github.io/WPO/sitemap.xml
