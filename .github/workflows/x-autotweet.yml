@@ -1,9 +1,9 @@
-name: X Auto Post (Every 4 hours)
+name: X Auto Post (Every 5 hours)
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 */4 * * *"
+    - cron: "*/5 * * * *"
 
 permissions:
   contents: write
