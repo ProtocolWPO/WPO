@@ -1,185 +1,185 @@
 {
-  "updated_utc": "2026-01-28T03:46:13Z",
+  "updated_utc": "2026-01-28T04:45:18Z",
   "criteria": "Ranked by combined score: 24h Volume + (Volume/MarketCap ratio)",
   "items": [
     {
       "symbol": "USDT",
       "name": "Tether USDt",
-      "price": 0.9985011924878807,
-      "volume_24h": 87388102968.38585,
-      "market_cap": 186255821594.47174,
-      "vol_mcap_ratio": 0.4691832030821184,
+      "price": 0.9985584836149669,
+      "volume_24h": 86975734833.13496,
+      "market_cap": 186266508417.9085,
+      "vol_mcap_ratio": 0.4669424233689706,
       "rank": 1
     },
     {
       "symbol": "TIMI",
       "name": "MetaArena",
-      "price": 0.0038283620581844612,
-      "volume_24h": 429771620.2210501,
-      "market_cap": 1524639.872077063,
-      "vol_mcap_ratio": 281.8840226417267,
+      "price": 0.0038561653298936627,
+      "volume_24h": 419265164.63475573,
+      "market_cap": 1535712.486416508,
+      "vol_mcap_ratio": 273.0101945143948,
       "rank": 2
     },
     {
       "symbol": "BTC",
       "name": "Bitcoin",
-      "price": 88931.030475945,
-      "volume_24h": 38046374792.8001,
-      "market_cap": 1776964535869.3767,
-      "vol_mcap_ratio": 0.021410880197553286,
+      "price": 88919.57958849767,
+      "volume_24h": 37913703247.44506,
+      "market_cap": 1776735731358.8564,
+      "vol_mcap_ratio": 0.021338965935270782,
       "rank": 3
     },
     {
       "symbol": "QUQ",
       "name": "Quq",
-      "price": 0.002097097718654602,
-      "volume_24h": 261920968.16699734,
-      "market_cap": 2097097.718654602,
-      "vol_mcap_ratio": 124.89688288585491,
+      "price": 0.0020966510447904233,
+      "volume_24h": 263400013.44847584,
+      "market_cap": 2096651.0447904232,
+      "vol_mcap_ratio": 125.62892337423023,
       "rank": 4
-    },
-    {
-      "symbol": "OWL",
-      "name": "Owlto Finance",
-      "price": 0.06720629027791881,
-      "volume_24h": 2212678866.133617,
-      "market_cap": 22178075.791713208,
-      "vol_mcap_ratio": 99.76874851155391,
-      "rank": 5
     },
     {
       "symbol": "ETH",
       "name": "Ethereum",
-      "price": 2998.4088608959087,
-      "volume_24h": 26598738495.27515,
-      "market_cap": 361891079851.1244,
-      "vol_mcap_ratio": 0.07349929295360748,
+      "price": 2995.5271334292925,
+      "volume_24h": 26261045192.38632,
+      "market_cap": 361543271559.08954,
+      "vol_mcap_ratio": 0.07263596713925927,
+      "rank": 5
+    },
+    {
+      "symbol": "OWL",
+      "name": "Owlto Finance",
+      "price": 0.06696132975301322,
+      "volume_24h": 2120140125.2811122,
+      "market_cap": 22097238.818494365,
+      "vol_mcap_ratio": 95.94592983747151,
       "rank": 6
     },
     {
       "symbol": "USDC",
       "name": "USDC",
-      "price": 0.9996338984309296,
-      "volume_24h": 22721259196.387005,
-      "market_cap": 71600306712.81436,
-      "vol_mcap_ratio": 0.3173346629298805,
+      "price": 0.9995572257610036,
+      "volume_24h": 22749450748.76344,
+      "market_cap": 71603597498.49109,
+      "vol_mcap_ratio": 0.3177137957243397,
       "rank": 7
     },
     {
       "symbol": "PAXG",
       "name": "PAX Gold",
-      "price": 5245.8010764857745,
-      "volume_24h": 10021230878.905128,
-      "market_cap": 2183738884.911948,
-      "vol_mcap_ratio": 4.589024332599728,
+      "price": 5255.815898996404,
+      "volume_24h": 10029480427.700916,
+      "market_cap": 2187907887.3241796,
+      "vol_mcap_ratio": 4.584050583576904,
       "rank": 8
+    },
+    {
+      "symbol": "NFLXon",
+      "name": "Netflix Tokenized Stock (Ondo)",
+      "price": 855.1626110818988,
+      "volume_24h": 23995500.73959972,
+      "market_cap": 1241351.4761322213,
+      "vol_mcap_ratio": 19.33014234966267,
+      "rank": 9
     },
     {
       "symbol": "FDUSD",
       "name": "First Digital USD",
-      "price": 0.9984167412626062,
-      "volume_24h": 3195874327.0596952,
-      "market_cap": 478801098.96812814,
-      "vol_mcap_ratio": 6.674743090496607,
-      "rank": 9
+      "price": 0.9983340175210477,
+      "volume_24h": 3189111073.816956,
+      "market_cap": 478761427.9402577,
+      "vol_mcap_ratio": 6.661169609125047,
+      "rank": 10
     },
     {
       "symbol": "SOL",
       "name": "Solana",
-      "price": 126.8407707241212,
-      "volume_24h": 3610857028.556685,
-      "market_cap": 71800610802.3041,
-      "vol_mcap_ratio": 0.050290060045572925,
-      "rank": 10
+      "price": 126.68114670689864,
+      "volume_24h": 3611539186.814919,
+      "market_cap": 71710248880.86201,
+      "vol_mcap_ratio": 0.05036294313822643,
+      "rank": 11
     },
     {
       "symbol": "ZKP",
       "name": "zkPass",
-      "price": 0.11566696056444084,
-      "volume_24h": 230683180.78602678,
-      "market_cap": 23326170.419051223,
-      "vol_mcap_ratio": 9.88945791966008,
-      "rank": 11
+      "price": 0.1180076805088761,
+      "volume_24h": 220785802.16937798,
+      "market_cap": 23798215.608625907,
+      "vol_mcap_ratio": 9.277409945363798,
+      "rank": 12
     },
     {
       "symbol": "XRP",
       "name": "XRP",
-      "price": 1.8976900712675207,
-      "volume_24h": 2218099083.003559,
-      "market_cap": 115480576706.2529,
-      "vol_mcap_ratio": 0.01920755114209138,
-      "rank": 12
+      "price": 1.900427535971002,
+      "volume_24h": 2215846378.482086,
+      "market_cap": 115647160284.6029,
+      "vol_mcap_ratio": 0.01916040457049684,
+      "rank": 13
     },
     {
       "symbol": "BNB",
       "name": "BNB",
-      "price": 894.8157240508275,
-      "volume_24h": 2053668050.5373566,
-      "market_cap": 122017358409.96544,
-      "vol_mcap_ratio": 0.016830949934494147,
-      "rank": 13
+      "price": 897.2460868540701,
+      "volume_24h": 2041857240.8564923,
+      "market_cap": 122348761700.75923,
+      "vol_mcap_ratio": 0.01668882637202712,
+      "rank": 14
     },
     {
       "symbol": "SXP",
       "name": "Solar",
-      "price": 0.047675095646484034,
-      "volume_24h": 213005610.9312288,
-      "market_cap": 31954720.762857143,
-      "vol_mcap_ratio": 6.665857370871405,
-      "rank": 14
+      "price": 0.047158531437944226,
+      "volume_24h": 217451190.14610273,
+      "market_cap": 31608700.240637917,
+      "vol_mcap_ratio": 6.879472692348649,
+      "rank": 15
     },
     {
       "symbol": "USDR",
       "name": "StablR USD",
-      "price": 0.9985205446717178,
-      "volume_24h": 52861977.54708163,
-      "market_cap": 7426109.174950596,
-      "vol_mcap_ratio": 7.118394882395909,
-      "rank": 15
+      "price": 0.9988404971811274,
+      "volume_24h": 53783316.31320719,
+      "market_cap": 7428488.697613753,
+      "vol_mcap_ratio": 7.240142443843786,
+      "rank": 16
     },
     {
       "symbol": "ELSA",
       "name": "HeyElsa",
-      "price": 0.12494666025685473,
-      "volume_24h": 172192268.7749455,
-      "market_cap": 28610286.265614595,
-      "vol_mcap_ratio": 6.018544071049564,
-      "rank": 16
+      "price": 0.1216093340668259,
+      "volume_24h": 177561523.53652874,
+      "market_cap": 27846105.314621795,
+      "vol_mcap_ratio": 6.376529914339311,
+      "rank": 17
     },
     {
       "symbol": "FIGHT",
       "name": "FIGHT",
-      "price": 0.023482383843067136,
-      "volume_24h": 251777389.9802396,
-      "market_cap": 48138886.87828763,
-      "vol_mcap_ratio": 5.230228746601955,
-      "rank": 17
+      "price": 0.02332826775094609,
+      "volume_24h": 263520409.8192615,
+      "market_cap": 47822948.889439486,
+      "vol_mcap_ratio": 5.510333761067031,
+      "rank": 18
     },
     {
       "symbol": "SPACE",
       "name": "Spacecoin",
-      "price": 0.011627947157575182,
-      "volume_24h": 141570457.57982865,
-      "market_cap": 25029156.256680578,
-      "vol_mcap_ratio": 5.656221733085462,
-      "rank": 18
+      "price": 0.011413137439825131,
+      "volume_24h": 140634753.15665358,
+      "market_cap": 24566778.339223597,
+      "vol_mcap_ratio": 5.724590795534413,
+      "rank": 19
     },
     {
       "symbol": "FOGO",
       "name": "Fogo",
-      "price": 0.04396031361106394,
-      "volume_24h": 562090648.2227113,
-      "market_cap": 165475857.1096777,
-      "vol_mcap_ratio": 3.39681363819833,
-      "rank": 19
-    },
-    {
-      "symbol": "USDQ",
-      "name": "Quantoz USDQ",
-      "price": 0.9989556639116174,
-      "volume_24h": 41629417.41184951,
-      "market_cap": 7971715.1468422385,
-      "vol_mcap_ratio": 5.222140611526967,
+      "price": 0.045393975620618594,
+      "volume_24h": 623412095.9178816,
+      "market_cap": 170873490.32030675,
+      "vol_mcap_ratio": 3.6483839286555195,
       "rank": 20
     }
   ]
