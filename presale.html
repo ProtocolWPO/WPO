@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WPO — Presale</title>
+  <meta name="description" content="WPO Presale — instant email confirmation + receipt." />
+  <style>
+    :root{--bg:#050812;--card:#0b1224;--txt:#e7edf6;--muted:#9aa4b2;--br:#1c2946;--gold:#f5cc66}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(1200px 700px at 25% 0%, #0b1530 0%, var(--bg) 55%);color:var(--txt)}
+    .wrap{max-width:1120px;margin:26px auto;padding:16px}
+    .card{background:rgba(11,18,36,.92);border:1px solid var(--br);border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(0,0,0,.28)}
+    .top{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand img{width:44px;height:44px;border-radius:12px;border:1px solid var(--br);background:#071025}
+    h1{margin:0;font-size:24px}
+    h2{margin:0 0 10px 0;font-size:16px;color:#d7e2f3}
+    .muted{color:var(--muted);font-size:13px;line-height:1.6}
+    .badge{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--br);background:rgba(255,255,255,.02);padding:8px 12px;border-radius:999px;font-size:12px;color:#cfe0ff}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:14px}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .img{width:100%;border-radius:16px;border:1px solid var(--br);background:#071025}
+    .hr{height:1px;background:var(--br);margin:14px 0}
+    label{display:block;margin:10px 0 6px;color:#cfe0ff;font-size:13px}
+    input,textarea,button{width:100%;box-sizing:border-box;padding:12px;border-radius:12px;border:1px solid var(--br);background:#0a1224;color:var(--txt);outline:none}
+    input:focus,textarea:focus{border-color:#2a3f72}
+    button{cursor:pointer;background:#122246;border-color:#243a6b;font-weight:650}
+    button:hover{filter:brightness(1.06)}
+    button:disabled{opacity:.65;cursor:not-allowed}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn2{width:auto;white-space:nowrap;background:#0f1b35}
+    .status{display:none;margin-top:12px;padding:12px;border-radius:12px;border:1px solid var(--br);background:rgba(255,255,255,.02);font-size:13px;line-height:1.6}
+    .ok{border-color:rgba(25,195,125,.35);background:rgba(25,195,125,.10)}
+    .warn{border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.08)}
+    .gold{color:var(--gold)}
+    .small{font-size:12px}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="top">
+        <div class="brand">
+          <img src="assets/wpo-logo-200.png" alt="WPO" />
+          <div>
+            <h1>WPO — Presale</h1>
+            <div class="muted">BNB Smart Chain (BSC) • Instant email receipt</div>
+          </div>
+        </div>
+        <div class="badge">Token: <b id="sym"></b></div>
+        <div class="badge">Presale: <b class="gold" id="presaleTxt"></b> / token</div>
+        <div class="badge">Next Listing: <b class="gold" id="listingTxt"></b> / token</div>
+        <div class="badge">Supply: <b>7,500,000</b></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Tokenomics</h2>
+        <div class="muted">Allocation overview (team vesting + liquidity + community rewards).</div>
+        <div class="hr"></div>
+        <img class="img" src="assets/wpo_tokenomics_infographic.png" alt="WPO Tokenomics" />
+        <div class="hr"></div>
+        <h2>How to buy</h2>
+        <ol class="muted">
+          <li>Send BNB to the presale wallet address below (BSC network only).</li>
+          <li>Fill the form (Email + Wallet + Amount + Tx Hash).</li>
+          <li>You’ll receive a receipt instantly. We verify on-chain and deliver tokens.</li>
+        </ol>
+        <div class="status warn" style="display:block">
+          Verify on BscScan: <span class="mono">https://bscscan.com/tx/&lt;TX_HASH&gt;</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Presale wallet (receive BNB)</h2>
+        <div class="muted">Send BNB to this address (BSC only):</div>
+        <div class="row" style="margin-top:10px">
+          <input id="receiver" class="mono" readonly />
+          <button class="btn2" id="copyBtn" type="button">Copy</button>
+        </div>
+
+        <div class="hr"></div>
+
+        <h2>Confirm your purchase</h2>
+        <div class="muted small">Submit the form — we receive your details by email, and you receive a receipt automatically.</div>
+
+        <form id="buyForm" style="margin-top:10px">
+          <label>Email (for receipt)</label>
+          <input name="buyer_email" type="email" required placeholder="name@example.com" />
+
+          <label>Your wallet address (sender)</label>
+          <input name="buyer_wallet" class="mono" required placeholder="0x..." />
+
+          <label>Amount sent (BNB)</label>
+          <input name="amount_bnb" type="number" step="0.000001" inputmode="decimal" required placeholder="e.g. 0.5" />
+
+          <label>Tx Hash</label>
+          <input name="tx_hash" class="mono" required placeholder="0x..." />
+
+          <label>Note (optional)</label>
+          <textarea name="note" rows="3" placeholder="Any extra details..."></textarea>
+
+          <button id="submitBtn" type="submit" style="margin-top:12px">Submit & Get Receipt</button>
+          <div id="msg" class="status"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TOKEN_SYMBOL = "WPO";
+    const PRESALE_PRICE_USD = 0.15;
+    const LISTING_PRICE_USD = 0.20;
+    const RECEIVER_BNB_ADDRESS = "0x88eba5be2216ab92c14ae1bfcaa2ef3417e3fba5";
+
+    const EMAILJS_PUBLIC_KEY = "pvMOyv5qJOCXRscyF";
+    const EMAILJS_SERVICE_ID = "service_u79fbik";
+    const TEMPLATE_ADMIN_ID  = "template_0zsanea";
+    const TEMPLATE_USER_ID   = "template_w3l1mlr";
+
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+    document.getElementById("sym").textContent = TOKEN_SYMBOL;
+    document.getElementById("presaleTxt").textContent = `$${PRESALE_PRICE_USD.toFixed(2)}`;
+    document.getElementById("listingTxt").textContent = `$${LISTING_PRICE_USD.toFixed(2)}`;
+    document.getElementById("receiver").value = RECEIVER_BNB_ADDRESS;
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      try{ await navigator.clipboard.writeText(RECEIVER_BNB_ADDRESS); alert("Copied ✅"); }
+      catch(e){ alert("Copy failed. Please copy manually."); }
+    });
+
+    const msg = document.getElementById("msg");
+    const submitBtn = document.getElementById("submitBtn");
+
+    const show = (text, type) => {
+      msg.style.display = "block";
+      msg.className = "status " + (type === "ok" ? "ok" : "warn");
+      msg.textContent = text;
+    };
+
+    const setLoading = (isLoading) => {
+      submitBtn.disabled = isLoading;
+      submitBtn.textContent = isLoading ? "Sending..." : "Submit & Get Receipt";
+    };
+
+    const makeOrderId = () => {
+      const ts = Date.now().toString(36).toUpperCase();
+      const rnd = Math.random().toString(36).slice(2, 8).toUpperCase();
+      return `WPO-${ts}-${rnd}`;
+    };
+
+    const makeLogoUrl = () => {
+      return new URL("assets/wpo-logo-200.png", window.location.href).href;
+    };
+
+    document.getElementById("buyForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setLoading(true);
+      show("Sending your details...", "warn");
+
+      const fd = new FormData(e.target);
+      const data = Object.fromEntries(fd.entries());
+
+      if(!data.buyer_wallet || data.buyer_wallet.length < 10 || !data.tx_hash || data.tx_hash.length < 10){
+        setLoading(false);
+        show("Invalid wallet address or Tx Hash.", "warn");
+        return;
+      }
+
+      data.order_id = makeOrderId();
+      data.logo_url = makeLogoUrl();
+      data.token_symbol = TOKEN_SYMBOL;
+      data.presale_price_usd = PRESALE_PRICE_USD.toFixed(2);
+      data.listing_price_usd = LISTING_PRICE_USD.toFixed(2);
+      data.receiver_address = RECEIVER_BNB_ADDRESS;
+      data.network = "BSC";
+      data.bscscan_link = `https://bscscan.com/tx/${data.tx_hash}`;
+
+      try{
+        await emailjs.send(EMAILJS_SERVICE_ID, TEMPLATE_ADMIN_ID, data);
+        await emailjs.send(EMAILJS_SERVICE_ID, TEMPLATE_USER_ID, data);
+        setLoading(false);
+        show("Submitted successfully! Receipt sent to your email.", "ok");
+        e.target.reset();
+      }catch(err){
+        setLoading(false);
+        show("Failed to send. Please try again.", "warn");
+      }
+    });
+  </script>
+</body>
+</html>
