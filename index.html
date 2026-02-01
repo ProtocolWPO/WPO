@@ -49,7 +49,6 @@
     button, a, input, select, textarea { touch-action: manipulation; }
     .container{max-width:1120px;margin:auto;padding:22px 16px 70px}
 
-    /* Top Bar */
     .topbar{
       position:sticky; top:0; z-index:100;
       padding:12px 0;
@@ -115,7 +114,6 @@
     }
     .btn-ghost{background: rgba(10,22,48,.55)}
 
-    /* Language dropdown */
     .lang-switch{position:relative;display:inline-block}
     .lang-menu{
       position:absolute; top:44px; right:0;
@@ -150,7 +148,6 @@
       .actions{justify-content:flex-start}
     }
 
-    /* Sections */
     .hero{
       margin-top: 18px;
       border: 1px solid rgba(148,163,184,.16);
@@ -235,7 +232,6 @@
       line-height:1.75;
     }
 
-    /* Form */
     form{margin-top: 10px}
     .form-grid{
       display:grid;
@@ -277,7 +273,6 @@
     .status.warn{border-color: rgba(245,158,11,.35); color:#fff7ed}
     .status.bad{border-color: rgba(239,68,68,.35); color:#fee2e2}
 
-    /* Reports */
     .report{display:flex;flex-direction:column;gap:10px}
     .report-top{
       display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;
@@ -310,10 +305,8 @@
       text-underline-offset: 3px;
     }
 
-    /* Honeypot (anti-bot) */
     .hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
 
-    /* Mobile pack */
     @media (max-width: 720px){
       .container{ padding: 14px 12px 56px; }
       .topbar{ padding: 10px 0; }
@@ -333,16 +326,14 @@
       nav::-webkit-scrollbar{ height: 0; }
       .navlink{ padding: 9px 12px; font-size: .86rem; flex: 0 0 auto; }
 
-      /* ✅ FIX: top buttons stacked on mobile (no side-by-side) */
       .actions{
         width: 100%;
         display: grid;
-        grid-template-columns: 1fr; /* was 1fr 1fr */
+        grid-template-columns: 1fr;
         gap: 10px;
       }
       .btn{ width: 100%; padding: 11px 14px; font-size: .92rem; }
 
-      /* ✅ FIX: lang switch full width + menu centered */
       .lang-switch{ width:100%; }
       #langBtn{ width:100%; justify-content:center; }
       .lang-menu{ left:0; right:0; min-width:unset; }
@@ -417,7 +408,6 @@
         </nav>
 
         <div class="actions">
-          <!-- Language switcher (names only) -->
           <div class="lang-switch">
             <button class="btn btn-ghost" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false">English</button>
             <ul id="langMenu" class="lang-menu" role="listbox" aria-label="Language menu">
@@ -439,7 +429,6 @@
 
   <div class="container">
 
-    <!-- HERO -->
     <div class="hero" id="home">
       <div>
         <h2 data-i18n="hero_title">Market Integrity Initiative</h2>
@@ -481,7 +470,6 @@
       </div>
     </div>
 
-    <!-- CATEGORIES -->
     <section id="categories">
       <h3 data-i18n="cat_title">Community Reporting Categories</h3>
 
@@ -512,7 +500,6 @@
       </div>
     </section>
 
-    <!-- FORM -->
     <section id="submit">
       <h3 data-i18n="form_title">Submit a Report</h3>
 
@@ -570,7 +557,6 @@
           <textarea id="details" name="details" required data-i18n-placeholder="ph_details" placeholder="Explain what happened, timeline, and why it is suspicious…"></textarea>
         </div>
 
-        <!-- ✅ Updated buttons per agreement -->
         <div class="form-actions">
           <button class="btn btn-primary" type="submit" data-i18n="btn_send">Prepare Email & Send</button>
 
@@ -589,7 +575,6 @@
       </form>
     </section>
 
-    <!-- PUBLISHED REPORTS -->
     <section id="reports">
       <h3 data-i18n="pub_title">Published Reports</h3>
 
@@ -600,7 +585,6 @@
       </div>
     </section>
 
-    <!-- CONTACT -->
     <section id="contact">
       <h3 data-i18n="contact_title">Official Communication</h3>
 
@@ -618,6 +602,7 @@
         </a>
       </p>
     </section>
+
 <section class="wpo-top20" id="top20-widget">
   <div class="wpo-top20__glow"></div>
 
@@ -633,7 +618,7 @@
         <span id="top20-updated">Updating…</span>
       </div>
       <div class="wpo-top20__search">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 18a8 8 0 1 1 5.293-14.293A8 8 0 0 1 10 18Zm11 3-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 18a8 8 0 0 1 5.293-14.293A8 8 0 0 1 10 18Zm11 3-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <input id="top20-q" type="search" placeholder="Search symbol or name…" autocomplete="off" />
       </div>
     </div>
@@ -652,8 +637,7 @@
           <th class="barcol">Activity</th>
         </tr>
       </thead>
-      <tbody id="top20-body">
-      </tbody>
+      <tbody id="top20-body"></tbody>
     </table>
 
     <div class="wpo-top20__loading" id="top20-loading">
@@ -683,8 +667,7 @@
   </div>
 
   <script src="app.js"></script>
-  <script src="app.js"></script>
-<script src="assets/top20.js"></script>
+  <script src="assets/top20.js"></script>
 
 </body>
 </html>
