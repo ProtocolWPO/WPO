@@ -1,185 +1,185 @@
 {
-  "updated_utc": "2026-02-01T17:50:30Z",
-  "criteria": "Ranked by combined score: 24h Volume + (Volume/MarketCap ratio)",
+  "updated_utc": "2026-02-01T18:28:18Z",
+  "criteria": "CMC-only | Exclude stable/wrapped | MarketCap>=200000000 | Volume24h>=20000000 | Score=log(vol)+0.7log(mcap)+ratio(clamped)-penalty",
   "items": [
-    {
-      "symbol": "USDT",
-      "name": "Tether USDt",
-      "price": 0.9991430650516298,
-      "volume_24h": 133376878701.3936,
-      "market_cap": 185214197964.9476,
-      "vol_mcap_ratio": 0.7201223241354079,
-      "rank": 1
-    },
     {
       "symbol": "BTC",
       "name": "Bitcoin",
-      "price": 77446.10434258425,
-      "volume_24h": 61621324636.584785,
-      "market_cap": 1547578861617.9673,
-      "vol_mcap_ratio": 0.03981788984385632,
-      "rank": 2
-    },
-    {
-      "symbol": "OWL",
-      "name": "Owlto Finance",
-      "price": 0.04158613766730753,
-      "volume_24h": 2394500052.7920375,
-      "market_cap": 13723425.430211484,
-      "vol_mcap_ratio": 174.482680360594,
-      "rank": 3
+      "price": 77985.7289447208,
+      "volume_24h": 60201621895.494896,
+      "market_cap": 1558361994411.5989,
+      "vol_mcap_ratio": 0.038631346318366566,
+      "rank": 1
     },
     {
       "symbol": "ETH",
       "name": "Ethereum",
-      "price": 2304.432666008821,
-      "volume_24h": 44392009649.07404,
-      "market_cap": 278130769593.486,
-      "vol_mcap_ratio": 0.15960840907303098,
-      "rank": 4
-    },
-    {
-      "symbol": "QUQ",
-      "name": "Quq",
-      "price": 0.0021549924100531374,
-      "volume_24h": 244856836.46226242,
-      "market_cap": 2154992.410053137,
-      "vol_mcap_ratio": 113.62306211381265,
-      "rank": 5
-    },
-    {
-      "symbol": "USDC",
-      "name": "USDC",
-      "price": 0.9997213330727341,
-      "volume_24h": 15957984731.470524,
-      "market_cap": 70293717267.55823,
-      "vol_mcap_ratio": 0.2270186490597704,
-      "rank": 6
+      "price": 2351.1926625410424,
+      "volume_24h": 44254365301.094376,
+      "market_cap": 283774411958.7109,
+      "vol_mcap_ratio": 0.15594910406345366,
+      "rank": 2
     },
     {
       "symbol": "SOL",
       "name": "Solana",
-      "price": 101.53721200050246,
-      "volume_24h": 6997186111.559821,
-      "market_cap": 57501371359.97357,
-      "vol_mcap_ratio": 0.1216872910344279,
-      "rank": 7
+      "price": 103.52232328467898,
+      "volume_24h": 6750021046.624191,
+      "market_cap": 58625554613.08396,
+      "vol_mcap_ratio": 0.11513786251017798,
+      "rank": 3
     },
     {
       "symbol": "XRP",
       "name": "XRP",
-      "price": 1.5942541041743599,
-      "volume_24h": 5046776363.581423,
-      "market_cap": 97015516998.19797,
-      "vol_mcap_ratio": 0.05202030066669815,
-      "rank": 8
-    },
-    {
-      "symbol": "ZKP",
-      "name": "zkPass",
-      "price": 0.09346698122580092,
-      "volume_24h": 333281955.3501782,
-      "market_cap": 18849174.578358848,
-      "vol_mcap_ratio": 17.681514591775628,
-      "rank": 9
-    },
-    {
-      "symbol": "ELSA",
-      "name": "HeyElsa",
-      "price": 0.09719699042997972,
-      "volume_24h": 246832288.37826648,
-      "market_cap": 22256166.868656754,
-      "vol_mcap_ratio": 11.090512118952484,
-      "rank": 10
+      "price": 1.61762221157352,
+      "volume_24h": 4918369197.789189,
+      "market_cap": 98437541890.37976,
+      "vol_mcap_ratio": 0.04996436423886219,
+      "rank": 4
     },
     {
       "symbol": "BNB",
       "name": "BNB",
-      "price": 750.8774927500182,
-      "volume_24h": 2871536494.2065496,
-      "market_cap": 102389670747.3988,
-      "vol_mcap_ratio": 0.02804517753837489,
-      "rank": 11
+      "price": 763.5222851359039,
+      "volume_24h": 2845611419.53858,
+      "market_cap": 104113913804.34476,
+      "vol_mcap_ratio": 0.027331711157129034,
+      "rank": 5
     },
     {
-      "symbol": "FDUSD",
-      "name": "First Digital USD",
-      "price": 0.9972258460778504,
-      "volume_24h": 1628112821.231138,
-      "market_cap": 454877321.263287,
-      "vol_mcap_ratio": 3.5792349829829653,
-      "rank": 12
-    },
-    {
-      "symbol": "POKT",
-      "name": "Pocket Network",
-      "price": 0.009929156483983468,
-      "volume_24h": 207748939.24996412,
-      "market_cap": 22594474.91195197,
-      "vol_mcap_ratio": 9.194678790259012,
-      "rank": 13
+      "symbol": "DOGE",
+      "name": "Dogecoin",
+      "price": 0.10559086834831478,
+      "volume_24h": 1912696955.1414275,
+      "market_cap": 17798660020.192326,
+      "vol_mcap_ratio": 0.10746297490774587,
+      "rank": 6
     },
     {
       "symbol": "USD1",
       "name": "World Liberty Financial USD",
-      "price": 0.9984953079852548,
-      "volume_24h": 2383748612.460783,
-      "market_cap": 5004997332.739896,
-      "vol_mcap_ratio": 0.4762737028584674,
+      "price": 0.9985939296612176,
+      "volume_24h": 2269781139.977054,
+      "market_cap": 5005491677.802108,
+      "vol_mcap_ratio": 0.4534581787525229,
+      "rank": 7
+    },
+    {
+      "symbol": "TRX",
+      "name": "TRON",
+      "price": 0.2861571062530064,
+      "volume_24h": 779180101.3009274,
+      "market_cap": 27104160322.267338,
+      "vol_mcap_ratio": 0.028747619997687015,
+      "rank": 8
+    },
+    {
+      "symbol": "ADA",
+      "name": "Cardano",
+      "price": 0.2910613266480641,
+      "volume_24h": 993466380.3547006,
+      "market_cap": 10491630420.11547,
+      "vol_mcap_ratio": 0.0946913244723089,
+      "rank": 9
+    },
+    {
+      "symbol": "LINK",
+      "name": "Chainlink",
+      "price": 9.651019031221947,
+      "volume_24h": 1127563045.091755,
+      "market_cap": 6833886290.845613,
+      "vol_mcap_ratio": 0.1649958745439167,
+      "rank": 10
+    },
+    {
+      "symbol": "SUI",
+      "name": "Sui",
+      "price": 1.1252381604211772,
+      "volume_24h": 1226363339.274761,
+      "market_cap": 4327860099.427426,
+      "vol_mcap_ratio": 0.28336482952325753,
+      "rank": 11
+    },
+    {
+      "symbol": "BCH",
+      "name": "Bitcoin Cash",
+      "price": 527.4793781360514,
+      "volume_24h": 689565303.2137718,
+      "market_cap": 10543699574.162584,
+      "vol_mcap_ratio": 0.06540069719963919,
+      "rank": 12
+    },
+    {
+      "symbol": "HYPE",
+      "name": "Hyperliquid",
+      "price": 30.041451552202908,
+      "volume_24h": 737973294.1008722,
+      "market_cap": 9074678138.84172,
+      "vol_mcap_ratio": 0.08132225549049237,
+      "rank": 13
+    },
+    {
+      "symbol": "LTC",
+      "name": "Litecoin",
+      "price": 59.323100906057604,
+      "volume_24h": 611910532.1938643,
+      "market_cap": 4556095836.514641,
+      "vol_mcap_ratio": 0.1343058956946719,
       "rank": 14
     },
     {
-      "symbol": "ENSO",
-      "name": "Enso",
-      "price": 1.1636274974281742,
-      "volume_24h": 216799558.46595755,
-      "market_cap": 23959090.172046106,
-      "vol_mcap_ratio": 9.048739201245006,
+      "symbol": "XAUT",
+      "name": "Tether Gold",
+      "price": 4821.15329810353,
+      "volume_24h": 649936279.9800133,
+      "market_cap": 2361524507.977633,
+      "vol_mcap_ratio": 0.27521894343438635,
       "rank": 15
     },
     {
-      "symbol": "USDQ",
-      "name": "Quantoz USDQ",
-      "price": 0.9988347764535299,
-      "volume_24h": 68808153.69615039,
-      "market_cap": 7970750.459003215,
-      "vol_mcap_ratio": 8.632581593170993,
+      "symbol": "ZEC",
+      "name": "Zcash",
+      "price": 297.33233999455024,
+      "volume_24h": 503409099.6972402,
+      "market_cap": 4910291521.57337,
+      "vol_mcap_ratio": 0.10252122455164055,
       "rank": 16
     },
     {
-      "symbol": "ZK",
-      "name": "ZKsync",
-      "price": 0.029634864514226915,
-      "volume_24h": 1125230757.9463732,
-      "market_cap": 260820089.3661621,
-      "vol_mcap_ratio": 4.314202792740692,
+      "symbol": "AVAX",
+      "name": "Avalanche",
+      "price": 10.024420921797628,
+      "volume_24h": 496744331.86109245,
+      "market_cap": 4327061820.511537,
+      "vol_mcap_ratio": 0.11479945340886494,
       "rank": 17
     },
     {
-      "symbol": "FIGHT",
-      "name": "FIGHT",
-      "price": 0.007060438401979487,
-      "volume_24h": 120431590.80070315,
-      "market_cap": 14473898.724057948,
-      "vol_mcap_ratio": 8.320604772543176,
+      "symbol": "PEPE",
+      "name": "Pepe",
+      "price": 4.284849547163979e-06,
+      "volume_24h": 502694498.44662815,
+      "market_cap": 1772952920.4036422,
+      "vol_mcap_ratio": 0.2835351647872192,
       "rank": 18
     },
     {
-      "symbol": "WETH",
-      "name": "WETH",
-      "price": 2306.6141889845926,
-      "volume_24h": 2102409093.101608,
-      "market_cap": 7785555451.528657,
-      "vol_mcap_ratio": 0.2700397044489369,
+      "symbol": "VBNB",
+      "name": "Venus BNB",
+      "price": 19.048668586558264,
+      "volume_24h": 465220533.1214422,
+      "market_cap": 465218469.7051533,
+      "vol_mcap_ratio": 1.0000044353705264,
       "rank": 19
     },
     {
-      "symbol": "ZTC",
-      "name": "ZenChain",
-      "price": 0.0018274898564523722,
-      "volume_24h": 84377482.32710554,
-      "market_cap": 10188225.746797118,
-      "vol_mcap_ratio": 8.281862261800722,
+      "symbol": "AAVE",
+      "name": "Aave",
+      "price": 126.10085742185173,
+      "volume_24h": 458424261.1095693,
+      "market_cap": 1932167318.3338027,
+      "vol_mcap_ratio": 0.23725909074214638,
       "rank": 20
     }
   ]
