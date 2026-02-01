@@ -4,9 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>WPO — Presale</title>
-  <meta name="description" content="WPO Presale — instant email confirmation + receipt." />
+  <meta name="description" content="WPO Presale — pay with wallet + instant email receipt." />
+
   <style>
-    :root{--bg:#050812;--card:#0b1224;--txt:#e7edf6;--muted:#9aa4b2;--br:#1c2946;--gold:#f5cc66}
+    :root{--bg:#050812;--card:#0b1224;--txt:#e7edf6;--muted:#9aa4b2;--br:#1c2946;--gold:#f5cc66;--acc:#7c3aed;--acc2:#2563eb}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(1200px 700px at 25% 0%, #0b1530 0%, var(--bg) 55%);color:var(--txt)}
     .wrap{max-width:1120px;margin:26px auto;padding:16px}
     .card{background:rgba(11,18,36,.92);border:1px solid var(--br);border-radius:18px;padding:16px;box-shadow:0 12px 34px rgba(0,0,0,.28)}
@@ -30,14 +31,30 @@
     button:disabled{opacity:.65;cursor:not-allowed}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .btn2{width:auto;white-space:nowrap;background:#0f1b35}
-    .status{display:none;margin-top:12px;padding:12px;border-radius:12px;border:1px solid var(--br);background:rgba(255,255,255,.02);font-size:13px;line-height:1.6}
+    .btnPrimary{
+      background: linear-gradient(135deg, var(--acc2), var(--acc));
+      border-color: rgba(255,255,255,.08);
+      font-weight:800;
+    }
+    .status{display:none;margin-top:12px;padding:12px;border-radius:12px;border:1px solid var(--br);background:rgba(255,255,255,.02);font-size:13px;line-height:1.6;word-break:break-word}
     .ok{border-color:rgba(25,195,125,.35);background:rgba(25,195,125,.10)}
     .warn{border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.08)}
     .gold{color:var(--gold)}
     .small{font-size:12px}
+    .box{border:1px solid var(--br);background:rgba(255,255,255,.02);border-radius:14px;padding:12px}
+    .kv{display:flex;justify-content:space-between;gap:10px;margin:6px 0;font-size:13px}
+    .kv b{color:#eaf0ff}
+    .barWrap{height:12px;border-radius:999px;overflow:hidden;border:1px solid var(--br);background:rgba(255,255,255,.02)}
+    .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--acc2),var(--acc));transition:width .35s ease}
+    .pill{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--br);background:rgba(255,255,255,.02);padding:8px 10px;border-radius:999px;font-size:12px;color:#cfe0ff}
   </style>
+
+  <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <!-- Ethers -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 </head>
+
 <body>
   <div class="wrap">
     <div class="card">
@@ -46,7 +63,7 @@
           <img src="assets/wpo-logo-200.png" alt="WPO" />
           <div>
             <h1>WPO — Presale</h1>
-            <div class="muted">BNB Smart Chain (BSC) • Instant email receipt</div>
+            <div class="muted">BNB Smart Chain (BSC) • Pay with wallet • Instant email receipt</div>
           </div>
         </div>
         <div class="badge">Token: <b id="sym"></b></div>
@@ -57,26 +74,54 @@
     </div>
 
     <div class="grid">
+      <!-- LEFT -->
       <div class="card">
         <h2>Tokenomics</h2>
         <div class="muted">Allocation overview (team vesting + liquidity + community rewards).</div>
         <div class="hr"></div>
         <img class="img" src="assets/wpo_tokenomics_infographic.png" alt="WPO Tokenomics" />
         <div class="hr"></div>
+
         <h2>How to buy</h2>
         <ol class="muted">
-          <li>Send BNB to the presale wallet address below (BSC network only).</li>
-          <li>Fill the form (Email + Wallet + Amount + Tx Hash).</li>
-          <li>You’ll receive a receipt instantly. We verify on-chain and deliver tokens.</li>
+          <li>Connect your wallet (BSC network).</li>
+          <li>Enter the amount in BNB and click <b>Pay with Wallet</b>.</li>
+          <li>After confirmation, submit your email to receive a receipt instantly.</li>
         </ol>
+
         <div class="status warn" style="display:block">
-          Verify on BscScan: <span class="mono">https://bscscan.com/tx/&lt;TX_HASH&gt;</span>
+          Safety: We never ask for seed phrase. Verify TX on BscScan:
+          <span class="mono">https://bscscan.com/tx/&lt;TX_HASH&gt;</span>
         </div>
       </div>
 
+      <!-- RIGHT -->
       <div class="card">
-        <h2>Presale wallet (receive BNB)</h2>
-        <div class="muted">Send BNB to this address (BSC only):</div>
+        <div class="row" style="justify-content:space-between">
+          <h2 style="margin:0">Buy Now</h2>
+          <span class="pill">Network: <b>BSC</b></span>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="box" id="raisedBox" style="display:none">
+          <div class="muted small">Progress (optional)</div>
+          <div class="barWrap"><div class="bar" id="raisedBar"></div></div>
+          <div class="kv"><span class="muted">USD Raised</span><b id="raisedUsd">—</b></div>
+          <div class="kv"><span class="muted">Hard Cap</span><b id="hardCapUsd">—</b></div>
+        </div>
+
+        <div class="box" style="margin-top:12px">
+          <div class="kv"><span class="muted">Wallet</span><b id="walletTxt">Not connected</b></div>
+          <div class="kv"><span class="muted">BNB Price (est.)</span><b id="bnbUsdTxt">—</b></div>
+          <div class="kv"><span class="muted">You receive (est.)</span><b id="recvTxt">—</b></div>
+          <div class="muted small">Estimation uses public price feed (for display only). Final delivery is verified on-chain.</div>
+        </div>
+
+        <div class="hr"></div>
+
+        <h2>Presale wallet (receiver)</h2>
+        <div class="muted">BNB will be sent to this address on BSC:</div>
         <div class="row" style="margin-top:10px">
           <input id="receiver" class="mono" readonly />
           <button class="btn2" id="copyBtn" type="button">Copy</button>
@@ -84,24 +129,40 @@
 
         <div class="hr"></div>
 
-        <h2>Confirm your purchase</h2>
-        <div class="muted small">Submit the form — we receive your details by email, and you receive a receipt automatically.</div>
+        <div class="row">
+          <button class="btn2" id="connectBtn" type="button">Connect Wallet</button>
+          <button class="btn2" id="switchBtn" type="button">Switch to BSC</button>
+        </div>
+
+        <label>Amount (BNB)</label>
+        <input id="amountBnb" type="number" step="0.000001" inputmode="decimal" placeholder="e.g. 0.5" />
+
+        <button id="payBtn" class="btnPrimary" type="button" style="margin-top:12px">Pay with Wallet</button>
+        <div id="payMsg" class="status"></div>
+
+        <div class="hr"></div>
+
+        <h2>Send receipt to your email</h2>
+        <div class="muted small">After payment, confirm your email — the form will auto-fill wallet + tx hash.</div>
 
         <form id="buyForm" style="margin-top:10px">
           <label>Email (for receipt)</label>
           <input name="buyer_email" type="email" required placeholder="name@example.com" />
 
           <label>Your wallet address (sender)</label>
-          <input name="buyer_wallet" class="mono" required placeholder="0x..." />
+          <input name="buyer_wallet" id="buyerWallet" class="mono" required placeholder="0x..." />
 
           <label>Amount sent (BNB)</label>
-          <input name="amount_bnb" type="number" step="0.000001" inputmode="decimal" required placeholder="e.g. 0.5" />
+          <input name="amount_bnb" id="amountSent" type="number" step="0.000001" inputmode="decimal" required placeholder="e.g. 0.5" />
 
           <label>Tx Hash</label>
-          <input name="tx_hash" class="mono" required placeholder="0x..." />
+          <input name="tx_hash" id="txHash" class="mono" required placeholder="0x..." />
 
           <label>Note (optional)</label>
           <textarea name="note" rows="3" placeholder="Any extra details..."></textarea>
+
+          <!-- honeypot (anti-bot) -->
+          <input name="website" style="display:none" tabindex="-1" autocomplete="off" />
 
           <button id="submitBtn" type="submit" style="margin-top:12px">Submit & Get Receipt</button>
           <div id="msg" class="status"></div>
@@ -110,87 +171,289 @@
     </div>
   </div>
 
-  <script>
-    const TOKEN_SYMBOL = "WPO";
-    const PRESALE_PRICE_USD = 0.15;
-    const LISTING_PRICE_USD = 0.20;
-    const RECEIVER_BNB_ADDRESS = "0xbfa20bec0dac600c197312f661a625d3cc3d048b";
+<script>
+  // =========================
+  // CONFIG (Your existing values)
+  // =========================
+  const TOKEN_SYMBOL = "WPO";
+  const PRESALE_PRICE_USD = 0.15;
+  const LISTING_PRICE_USD = 0.20;
+  const RECEIVER_BNB_ADDRESS = "0xbfa20bec0dac600c197312f661a625d3cc3d048b";
 
-    const EMAILJS_PUBLIC_KEY = "pvMOyv5qJOCXRscyF";
-    const EMAILJS_SERVICE_ID = "service_u79fbik";
-    const TEMPLATE_ADMIN_ID  = "template_0zsanea";
-    const TEMPLATE_USER_ID   = "template_w3l1mlr";
+  // Optional: show progress from a json file (create data/presale.json)
+  // Example file: { "raised_usd": 12450.75, "hardcap_usd": 498556 }
+  const PROGRESS_JSON_URL = "data/presale.json";
 
-    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  // EmailJS (your existing values)
+  const EMAILJS_PUBLIC_KEY = "pvMOyv5qJOCXRscyF";
+  const EMAILJS_SERVICE_ID = "service_u79fbik";
+  const TEMPLATE_ADMIN_ID  = "template_0zsanea";
+  const TEMPLATE_USER_ID   = "template_w3l1mlr";
 
-    document.getElementById("sym").textContent = TOKEN_SYMBOL;
-    document.getElementById("presaleTxt").textContent = `$${PRESALE_PRICE_USD.toFixed(2)}`;
-    document.getElementById("listingTxt").textContent = `$${LISTING_PRICE_USD.toFixed(2)}`;
-    document.getElementById("receiver").value = RECEIVER_BNB_ADDRESS;
+  // Minimum buy in USD (optional guard for UI)
+  const MIN_BUY_USD = 5;
 
-    document.getElementById("copyBtn").addEventListener("click", async () => {
-      try{ await navigator.clipboard.writeText(RECEIVER_BNB_ADDRESS); alert("Copied ✅"); }
-      catch(e){ alert("Copy failed. Please copy manually."); }
-    });
+  // BSC chain
+  const BSC = {
+    chainId: "0x38",
+    chainName: "BNB Smart Chain",
+    nativeCurrency: { name:"BNB", symbol:"BNB", decimals:18 },
+    rpcUrls: ["https://bsc-dataseed.binance.org/"],
+    blockExplorerUrls: ["https://bscscan.com/"]
+  };
 
-    const msg = document.getElementById("msg");
-    const submitBtn = document.getElementById("submitBtn");
+  // =========================
+  // INIT UI
+  // =========================
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-    const show = (text, type) => {
-      msg.style.display = "block";
-      msg.className = "status " + (type === "ok" ? "ok" : "warn");
-      msg.textContent = text;
-    };
+  document.getElementById("sym").textContent = TOKEN_SYMBOL;
+  document.getElementById("presaleTxt").textContent = `$${PRESALE_PRICE_USD.toFixed(2)}`;
+  document.getElementById("listingTxt").textContent = `$${LISTING_PRICE_USD.toFixed(2)}`;
+  document.getElementById("receiver").value = RECEIVER_BNB_ADDRESS;
 
-    const setLoading = (isLoading) => {
-      submitBtn.disabled = isLoading;
-      submitBtn.textContent = isLoading ? "Sending..." : "Submit & Get Receipt";
-    };
+  document.getElementById("copyBtn").addEventListener("click", async () => {
+    try{ await navigator.clipboard.writeText(RECEIVER_BNB_ADDRESS); alert("Copied ✅"); }
+    catch(e){ alert("Copy failed. Please copy manually."); }
+  });
 
-    const makeOrderId = () => {
-      const ts = Date.now().toString(36).toUpperCase();
-      const rnd = Math.random().toString(36).slice(2, 8).toUpperCase();
-      return `WPO-${ts}-${rnd}`;
-    };
+  // =========================
+  // STATUS HELPERS
+  // =========================
+  const payMsg = document.getElementById("payMsg");
+  const msg = document.getElementById("msg");
+  const submitBtn = document.getElementById("submitBtn");
+  const payBtn = document.getElementById("payBtn");
 
-    const makeLogoUrl = () => {
-      return new URL("assets/wpo-logo-200.png", window.location.href).href;
-    };
+  function showBox(el, text, type){
+    el.style.display = "block";
+    el.className = "status " + (type === "ok" ? "ok" : "warn");
+    el.textContent = text;
+  }
+  function setLoading(btn, isLoading, textLoading, textNormal){
+    btn.disabled = isLoading;
+    btn.textContent = isLoading ? textLoading : textNormal;
+  }
+  function shortAddr(a){
+    if(!a) return "Not connected";
+    return a.slice(0,6)+"…"+a.slice(-4);
+  }
 
-    document.getElementById("buyForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      setLoading(true);
-      show("Sending your details...", "warn");
+  // =========================
+  // ORDER ID + LOGO URL
+  // =========================
+  const makeOrderId = () => {
+    const ts = Date.now().toString(36).toUpperCase();
+    const rnd = Math.random().toString(36).slice(2, 8).toUpperCase();
+    return `WPO-${ts}-${rnd}`;
+  };
+  const makeLogoUrl = () => new URL("assets/wpo-logo-200.png", window.location.href).href;
 
-      const fd = new FormData(e.target);
-      const data = Object.fromEntries(fd.entries());
+  // =========================
+  // PROGRESS (optional)
+  // =========================
+  async function loadProgress(){
+    try{
+      const url = PROGRESS_JSON_URL + "?v=" + Date.now();
+      const r = await fetch(url, { cache:"no-store" });
+      if(!r.ok) return;
+      const j = await r.json();
+      if(typeof j.raised_usd !== "number" || typeof j.hardcap_usd !== "number") return;
 
-      if(!data.buyer_wallet || data.buyer_wallet.length < 10 || !data.tx_hash || data.tx_hash.length < 10){
-        setLoading(false);
-        show("Invalid wallet address or Tx Hash.", "warn");
-        return;
+      const box = document.getElementById("raisedBox");
+      box.style.display = "block";
+      document.getElementById("raisedUsd").textContent = "$" + j.raised_usd.toLocaleString(undefined,{maximumFractionDigits:2});
+      document.getElementById("hardCapUsd").textContent = "$" + j.hardcap_usd.toLocaleString(undefined,{maximumFractionDigits:0});
+      const pct = j.hardcap_usd > 0 ? Math.min(100, (j.raised_usd/j.hardcap_usd)*100) : 0;
+      document.getElementById("raisedBar").style.width = pct.toFixed(2) + "%";
+    }catch(e){}
+  }
+  loadProgress();
+
+  // =========================
+  // WALLET CONNECT + PAYMENT
+  // =========================
+  let provider = null, signer = null, userAddress = null;
+
+  async function ensureBSC(){
+    if(!window.ethereum) throw new Error("No wallet detected. Please install MetaMask.");
+    const chainId = await window.ethereum.request({ method:"eth_chainId" });
+    if(chainId === BSC.chainId) return;
+    try{
+      await window.ethereum.request({ method:"wallet_switchEthereumChain", params:[{ chainId: BSC.chainId }] });
+    }catch(e){
+      if(e.code === 4902){
+        await window.ethereum.request({ method:"wallet_addEthereumChain", params:[BSC] });
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  async function connectWallet(){
+    try{
+      await ensureBSC();
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      signer = provider.getSigner();
+      userAddress = await signer.getAddress();
+
+      document.getElementById("walletTxt").textContent = shortAddr(userAddress);
+      document.getElementById("buyerWallet").value = userAddress;
+
+      showBox(payMsg, "Wallet connected ✅", "ok");
+
+      window.ethereum.on?.("accountsChanged", ()=>location.reload());
+      window.ethereum.on?.("chainChanged", ()=>location.reload());
+    }catch(e){
+      showBox(payMsg, e?.message || "Failed to connect wallet.", "warn");
+    }
+  }
+
+  document.getElementById("connectBtn").addEventListener("click", connectWallet);
+  document.getElementById("switchBtn").addEventListener("click", async ()=>{
+    try{ await ensureBSC(); showBox(payMsg, "Switched to BSC ✅", "ok"); }
+    catch(e){ showBox(payMsg, e?.message || "Failed to switch network.", "warn"); }
+  });
+
+  // =========================
+  // BNB PRICE (for estimation only)
+  // =========================
+  let bnbUsd = null;
+  async function fetchBnbUsd(){
+    try{
+      const url = "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd&v=" + Date.now();
+      const r = await fetch(url, { cache:"no-store" });
+      const j = await r.json();
+      const p = j?.binancecoin?.usd;
+      if(typeof p === "number" && p > 0){
+        bnbUsd = p;
+        document.getElementById("bnbUsdTxt").textContent = "$" + p.toLocaleString(undefined,{maximumFractionDigits:2});
+        recalcEstimate();
+      }
+    }catch(e){
+      // ignore
+    }
+  }
+  fetchBnbUsd();
+  setInterval(fetchBnbUsd, 60_000);
+
+  function recalcEstimate(){
+    const val = Number(document.getElementById("amountBnb").value || 0);
+    if(!val || !bnbUsd){
+      document.getElementById("recvTxt").textContent = "—";
+      return;
+    }
+    const usd = val * bnbUsd;
+    const tokens = usd / PRESALE_PRICE_USD;
+    document.getElementById("recvTxt").textContent =
+      `${tokens.toLocaleString(undefined,{maximumFractionDigits:4})} ${TOKEN_SYMBOL}  (≈ $${usd.toLocaleString(undefined,{maximumFractionDigits:2})})`;
+  }
+  document.getElementById("amountBnb").addEventListener("input", recalcEstimate);
+
+  async function payWithWallet(){
+    try{
+      if(!signer || !userAddress){
+        await connectWallet();
+        if(!signer) return;
       }
 
-      data.order_id = makeOrderId();
-      data.logo_url = makeLogoUrl();
-      data.token_symbol = TOKEN_SYMBOL;
-      data.presale_price_usd = PRESALE_PRICE_USD.toFixed(2);
-      data.listing_price_usd = LISTING_PRICE_USD.toFixed(2);
-      data.receiver_address = RECEIVER_BNB_ADDRESS;
-      data.network = "BSC";
-      data.bscscan_link = `https://bscscan.com/tx/${data.tx_hash}`;
+      const amount = Number(document.getElementById("amountBnb").value || 0);
+      if(!amount || amount <= 0) return showBox(payMsg, "Enter a valid BNB amount.", "warn");
 
-      try{
-        await emailjs.send(EMAILJS_SERVICE_ID, TEMPLATE_ADMIN_ID, data);
-        await emailjs.send(EMAILJS_SERVICE_ID, TEMPLATE_USER_ID, data);
-        setLoading(false);
-        show("Submitted successfully! Receipt sent to your email.", "ok");
-        e.target.reset();
-      }catch(err){
-        setLoading(false);
-        show("Failed to send. Please try again.", "warn");
+      // UI min buy check (approx)
+      if(bnbUsd){
+        const usd = amount * bnbUsd;
+        if(usd < MIN_BUY_USD){
+          return showBox(payMsg, `Minimum buy is about $${MIN_BUY_USD}. Increase amount.`, "warn");
+        }
       }
-    });
-  </script>
+
+      setLoading(payBtn, true, "Sending…", "Pay with Wallet");
+      showBox(payMsg, "Confirm the transaction in your wallet…", "warn");
+
+      const tx = await signer.sendTransaction({
+        to: RECEIVER_BNB_ADDRESS,
+        value: ethers.utils.parseEther(String(amount))
+      });
+
+      showBox(payMsg, `Pending… TX: ${tx.hash}`, "warn");
+
+      const receipt = await tx.wait();
+      if(!receipt || receipt.status !== 1){
+        setLoading(payBtn, false, "Sending…", "Pay with Wallet");
+        return showBox(payMsg, "Transaction failed on-chain.", "warn");
+      }
+
+      // Autofill form fields
+      document.getElementById("amountSent").value = amount;
+      document.getElementById("txHash").value = tx.hash;
+      document.getElementById("buyerWallet").value = userAddress;
+
+      setLoading(payBtn, false, "Sending…", "Pay with Wallet");
+      showBox(payMsg, "Payment confirmed ✅ Now enter your email and submit to receive receipt.", "ok");
+
+    }catch(e){
+      setLoading(payBtn, false, "Sending…", "Pay with Wallet");
+      showBox(payMsg, e?.data?.message || e?.message || "Payment failed.", "warn");
+    }
+  }
+
+  document.getElementById("payBtn").addEventListener("click", payWithWallet);
+
+  // =========================
+  // EMAIL RECEIPT SUBMIT
+  // =========================
+  document.getElementById("buyForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // honeypot
+    const hp = e.target.querySelector('input[name="website"]')?.value;
+    if(hp) return; // bot
+
+    setLoading(submitBtn, true, "Sending…", "Submit & Get Receipt");
+    showBox(msg, "Sending your receipt…", "warn");
+
+    const fd = new FormData(e.target);
+    const data = Object.fromEntries(fd.entries());
+
+    if(!data.buyer_wallet || data.buyer_wallet.length < 10 || !data.tx_hash || data.tx_hash.length < 10){
+      setLoading(submitBtn, false, "Sending…", "Submit & Get Receipt");
+      showBox(msg, "Invalid wallet address or Tx Hash.", "warn");
+      return;
+    }
+
+    data.order_id = makeOrderId();
+    data.logo_url = makeLogoUrl();
+    data.token_symbol = TOKEN_SYMBOL;
+    data.presale_price_usd = PRESALE_PRICE_USD.toFixed(2);
+    data.listing_price_usd = LISTING_PRICE_USD.toFixed(2);
+    data.receiver_address = RECEIVER_BNB_ADDRESS;
+    data.network = "BSC";
+    data.bscscan_link = `https://bscscan.com/tx/${data.tx_hash}`;
+
+    try{
+      await emailjs.send(EMAILJS_SERVICE_ID, TEMPLATE_ADMIN_ID, data);
+      await emailjs.send(EMAILJS_SERVICE_ID, TEMPLATE_USER_ID, data);
+      setLoading(submitBtn, false, "Sending…", "Submit & Get Receipt");
+      showBox(msg, "Submitted successfully! Receipt sent to your email ✅", "ok");
+      e.target.reset();
+
+      // keep wallet auto-fill if connected
+      if(userAddress) document.getElementById("buyerWallet").value = userAddress;
+
+    }catch(err){
+      setLoading(submitBtn, false, "Sending…", "Submit & Get Receipt");
+      showBox(msg, "Failed to send. Please try again.", "warn");
+    }
+  });
+
+  // Auto-detect already connected wallet
+  if(window.ethereum){
+    window.ethereum.request({ method:"eth_accounts" }).then(acc=>{
+      if(acc && acc.length) connectWallet();
+    }).catch(()=>{});
+  }
+</script>
 </body>
 </html>
