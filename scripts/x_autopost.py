@@ -1,7 +1,6 @@
 import os
 import json
 import hashlib
-import html
 from datetime import datetime, timezone
 
 import requests
@@ -53,8 +52,6 @@ LABELS_BY_LANG = {
     "ID": {"top": "Top 15", "source": "Sumber", "submit": "Kirim", "site": "Situs"},
 }
 
-CMC_BASE = "https://pro-api.coinmarketcap.com"
-
 
 def sha(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
@@ -79,62 +76,53 @@ def save_debug(obj: dict) -> None:
         json.dump(obj, f, ensure_ascii=False, indent=2)
 
 
-def cmc_get(path: str, params: dict | None = None):
-    cmc_key = os.getenv("CMC_KEY")
-    if not cmc_key:
-        return None, 0, "CMC_KEY missing"
-
-    url = f"{CMC_BASE}{path}"
+def fetch_trending_top15_public():
+    """
+    Uses CoinMarketCap public data-api endpoint (no CMC_KEY needed).
+    This endpoint is used by the website and may change over time.
+    """
+    url = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/listing"
+    params = {
+        "start": 1,
+        "limit": 15,
+        "sortBy": "trendingScore",
+        "sortType": "desc",
+        "timeframe": "1h",
+        "cryptoType": "all",
+        "tagType": "all",
+        "convertId": 2781,  # USD
+    }
     headers = {
-        "X-CMC_PRO_API_KEY": cmc_key,
         "Accept": "application/json",
         "User-Agent": "WPO-trending-bot/1.0",
+        "Referer": "https://coinmarketcap.com/",
+        "Origin": "https://coinmarketcap.com",
     }
 
     try:
-        r = requests.get(url, headers=headers, params=params or {}, timeout=30)
+        r = requests.get(url, params=params, headers=headers, timeout=30)
     except Exception as e:
-        return None, -1, f"request_error: {e}"
+        return [], {"source": "public_data_api", "status": -1, "error": f"request_error: {e}"}
 
     status = r.status_code
-    text_snip = (r.text or "")[:700]
+    snip = (r.text or "")[:700]
 
-    if status in (401, 403, 429):
-        return None, status, text_snip
+    if status != 200:
+        return [], {"source": "public_data_api", "status": status, "error": snip}
 
     try:
-        r.raise_for_status()
-        return r.json(), status, ""
+        j = r.json()
     except Exception as e:
-        return None, status, f"parse_or_http_error: {e} :: {text_snip}"
+        return [], {"source": "public_data_api", "status": status, "error": f"json_parse_error: {e} :: {snip}"}
 
-
-def fetch_trending_top15():
-    j, status, err = cmc_get(
-        "/v1/cryptocurrency/trending/latest",
-        {"start": 1, "limit": 15, "convert": "USD"},
-    )
-    dbg = {"endpoint": "/v1/cryptocurrency/trending/latest", "status": status, "error": err}
-
-    if not j or "data" not in j:
-        return [], dbg
-
-    data = j.get("data")
-    if isinstance(data, dict):
-        items = data.get("data") or data.get("list") or []
-    else:
-        items = data or []
-
+    data = (((j or {}).get("data") or {}).get("cryptoCurrencyList")) or []
     out = []
-    for it in items:
-        if not isinstance(it, dict):
-            continue
-        symbol = (it.get("symbol") or "").strip()
-        name = (it.get("name") or "").strip()
-        if symbol:
-            out.append({"symbol": symbol, "name": html.unescape(name) if name else ""})
+    for it in data:
+        sym = (it.get("symbol") or "").strip()
+        if sym:
+            out.append(sym)
 
-    return out[:15], dbg
+    return out[:15], {"source": "public_data_api", "status": status, "error": ""}
 
 
 def post_to_x(text: str):
@@ -176,24 +164,28 @@ def build_tweet():
     hook = hook_list[run_count % len(hook_list)]
     labels = LABELS_BY_LANG.get(lang, LABELS_BY_LANG["EN"])
 
-    items, dbg = fetch_trending_top15()
-    if not items:
-        save_debug({
-            "utc": datetime.now(timezone.utc).isoformat(),
-            "run_count": run_count,
-            "lang": lang,
-            "trending_debug": dbg,
-            "selected_count": 0,
-        })
-        state["run_count"] = run_count
-        save_state(state)
+    symbols, dbg = fetch_trending_top15_public()
+
+    debug_payload = {
+        "utc": datetime.now(timezone.utc).isoformat(),
+        "run_count": run_count,
+        "lang": lang,
+        "trending_debug": dbg,
+        "selected_count": len(symbols),
+        "symbols": symbols,
+    }
+    save_debug(debug_payload)
+
+    state["run_count"] = run_count
+    save_state(state)
+
+    if not symbols:
         return None
 
-    symbols = [it["symbol"] for it in items]
     list_text = ", ".join(symbols)
-
     tags = " ".join(FIXED_HASHTAGS + EXTRA_HASHTAGS)
-    uniq = datetime.now(timezone.utc).strftime("• %H:%MZ")
+
+    uniq = f"• {datetime.now(timezone.utc).strftime('%H:%M:%SZ')} • run#{run_count}"
 
     tweet = (
         f"{hook}\n"
@@ -203,19 +195,6 @@ def build_tweet():
         f"{labels['site']}: {SITE_URL}\n"
         f"{tags} {uniq}"
     )
-
-    save_debug({
-        "utc": datetime.now(timezone.utc).isoformat(),
-        "run_count": run_count,
-        "lang": lang,
-        "trending_debug": dbg,
-        "selected_count": len(items),
-        "symbols": symbols,
-        "tweet_len": len(tweet),
-    })
-
-    state["run_count"] = run_count
-    save_state(state)
 
     return tweet
 
@@ -241,6 +220,7 @@ def main():
         return
 
     resp = post_to_x(tweet)
+    print("X post response:", str(resp)[:500])
 
     if isinstance(resp, dict) and resp.get("skipped"):
         state.update({
