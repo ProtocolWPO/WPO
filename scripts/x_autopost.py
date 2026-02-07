@@ -2,7 +2,7 @@ import os
 import json
 import hashlib
 import html
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import requests
 from requests_oauthlib import OAuth1Session
@@ -16,33 +16,46 @@ X_POST_URL = "https://api.x.com/2/tweets"
 
 SITE_URL = "https://protocolwpo.github.io/WPO/"
 FORM_URL = "https://protocolwpo.github.io/WPO/#submit"
+TRENDING_URL = "https://coinmarketcap.com/?tableRankBy=trending_all_1h"
 
 FIXED_HASHTAGS = ["#ProtocolWPO", "#CryptoNews"]
-
 LANGS = ["EN", "AR", "ZH", "ID"]
 
 POST_MODE = os.getenv("POST_MODE", "X").upper()  # "X" or "LONG"
 
+SAFE_MIN_MARKET_CAP_USD = float(os.getenv("SAFE_MIN_MARKET_CAP_USD", "200000000"))
+SAFE_MIN_VOLUME_24H_USD = float(os.getenv("SAFE_MIN_VOLUME_24H_USD", "10000000"))
+SAFE_MAX_CMC_RANK = int(os.getenv("SAFE_MAX_CMC_RANK", "300"))
+SAFE_MIN_AGE_DAYS = int(os.getenv("SAFE_MIN_AGE_DAYS", "180"))
+SAFE_EXCLUDE_TAGS = set(
+    t.strip().lower()
+    for t in os.getenv(
+        "SAFE_EXCLUDE_TAGS",
+        "memes,memecoin,ai memes,shitcoins,scam,ponzi",
+    ).split(",")
+    if t.strip()
+)
+
 HOOKS_BY_LANG = {
     "EN": [
-        "🚨 Don’t trade blind. Verify first.",
-        "🔎 News moves markets. Evidence moves smart traders.",
-        "🛡️ Protect capital: read the signal, not the noise.",
+        "🔥 CMC Trending (1H) — safe list only.",
+        "🧭 Trending now (1H) — filtered for safer assets.",
+        "🛡️ Attention map (1H) — safer picks only.",
     ],
     "AR": [
-        "🚨 لا تتداول أعمى… تحقق أولًا.",
-        "🔎 الأخبار تحرّك السوق… والأدلة تحمي رأس مالك.",
-        "🛡️ احمِ رأس مالك: اقرأ الإشارة لا الضجيج.",
+        "🔥 ترند CMC (ساعة) — قائمة آمنة فقط.",
+        "🧭 الترند الآن (ساعة) — مُرشّحة للأصول الأكثر أمانًا.",
+        "🛡️ خريطة الانتباه (ساعة) — اختيارات أكثر أمانًا فقط.",
     ],
     "ZH": [
-        "🚨 别盲目交易，先核实。",
-        "🔎 新闻会带动市场，证据保护资金。",
-        "🛡️ 保护本金：看信号，不看噪音。",
+        "🔥 CMC 1小时趋势榜 — 仅安全列表。",
+        "🧭 当前热门（1小时）— 已过滤更安全资产。",
+        "🛡️ 关注度地图（1小时）— 仅更安全选择。",
     ],
     "ID": [
-        "🚨 Jangan trading buta. Verifikasi dulu.",
-        "🔎 Berita menggerakkan market. Bukti melindungi modal.",
-        "🛡️ Lindungi modal: baca sinyal, bukan noise.",
+        "🔥 Trending CMC (1J) — daftar aman saja.",
+        "🧭 Trending sekarang (1J) — difilter lebih aman.",
+        "🛡️ Peta perhatian (1J) — pilihan lebih aman saja.",
     ],
 }
 
@@ -55,20 +68,16 @@ EXTRA_LINES_BY_LANG = {
 
 TEMPLATES = {
     "EN": [
-        "{hook}\n📰 {news}\nSubmit: {form}\nMore: {site}\n{tags} {uniq}",
-        "{hook}\nHeadline:\n{news}\nSubmit: {form}\nMore: {site}\n{tags} {uniq}",
+        "{hook}\nTop safe (max 15): {list}\nSource: {cmc}\nSubmit: {form}\n{site}\n{tags} {uniq}",
     ],
     "AR": [
-        "{hook}\n📰 {news}\nإرسال: {form}\nالمزيد: {site}\n{tags} {uniq}",
-        "{hook}\nآخر خبر:\n{news}\nإرسال: {form}\nالمزيد: {site}\n{tags} {uniq}",
+        "{hook}\nأفضل الآمن (حتى 15): {list}\nالمصدر: {cmc}\nإرسال: {form}\n{site}\n{tags} {uniq}",
     ],
     "ZH": [
-        "{hook}\n📰 {news}\n提交：{form}\n更多：{site}\n{tags} {uniq}",
-        "{hook}\n最新：\n{news}\n提交：{form}\n更多：{site}\n{tags} {uniq}",
+        "{hook}\n安全前15（最多）：{list}\n来源：{cmc}\n提交：{form}\n{site}\n{tags} {uniq}",
     ],
     "ID": [
-        "{hook}\n📰 {news}\nKirim: {form}\nSelengkapnya: {site}\n{tags} {uniq}",
-        "{hook}\nHeadline:\n{news}\nKirim: {form}\nSelengkapnya: {site}\n{tags} {uniq}",
+        "{hook}\nTop aman (maks 15): {list}\nSumber: {cmc}\nKirim: {form}\n{site}\n{tags} {uniq}",
     ],
 }
 
@@ -98,13 +107,6 @@ def save_debug(obj):
         json.dump(obj, f, ensure_ascii=False, indent=2)
 
 
-def shorten(s: str, max_len: int) -> str:
-    s = " ".join((s or "").split())
-    if len(s) <= max_len:
-        return s
-    return s[: max(0, max_len - 1)].rstrip() + "…"
-
-
 def cmc_get(path: str, params: dict | None = None):
     cmc_key = os.getenv("CMC_KEY")
     if not cmc_key:
@@ -123,7 +125,7 @@ def cmc_get(path: str, params: dict | None = None):
         return None, -1, f"request_error: {e}"
 
     status = r.status_code
-    text_snip = (r.text or "")[:400]
+    text_snip = (r.text or "")[:600]
 
     if status in (401, 403, 429):
         return None, status, text_snip
@@ -135,85 +137,151 @@ def cmc_get(path: str, params: dict | None = None):
         return None, status, f"parse_or_http_error: {e} :: {text_snip}"
 
 
-def fetch_cmc_latest_news(limit=8):
-    endpoints = [
-        ("/v1/content/latest", {"start": 1, "limit": limit, "sort": "published_at", "sort_dir": "desc"}),
-        ("/v1/content/posts/latest", {"start": 1, "limit": limit}),
-        ("/v1/content/posts/top", {"start": 1, "limit": limit}),
-    ]
+def fetch_cmc_trending_latest(limit=40):
+    j, status, err = cmc_get(
+        "/v1/cryptocurrency/trending/latest",
+        {"start": 1, "limit": limit, "convert": "USD"},
+    )
+    debug = {"endpoint": "cryptocurrency/trending/latest", "status": status, "error": err}
 
-    debug = {"tried": []}
+    if not j or "data" not in j:
+        return [], debug
 
-    for path, params in endpoints:
-        j, status, err = cmc_get(path, params)
-        debug["tried"].append({"path": path, "status": status, "error": err})
+    data = j.get("data")
+    if isinstance(data, dict):
+        items = data.get("data") or data.get("list") or []
+    else:
+        items = data or []
 
-        if not j or "data" not in j:
+    out = []
+    for it in items:
+        if not isinstance(it, dict):
             continue
-
-        out = []
-        for it in j["data"]:
-            title = (it.get("title") or it.get("headline") or "").strip()
-            url = (it.get("url") or it.get("source_url") or it.get("post_url") or it.get("link") or "").strip()
-            src = (it.get("source_name") or it.get("sourceName") or it.get("source") or "CMC").strip()
-            nid = it.get("id") or sha((title + url)[:200])
-
-            if title:
-                if not url:
-                    url = SITE_URL
-                out.append((src, html.unescape(title), url, str(nid)))
-
-        if out:
-            debug["selected"] = {"path": path, "count": len(out)}
-            return out, debug
-
-    debug["selected"] = None
-    return [], debug
+        name = (it.get("name") or "").strip()
+        symbol = (it.get("symbol") or "").strip()
+        cid = it.get("id")
+        if name and symbol and cid:
+            out.append({"name": html.unescape(name), "symbol": symbol, "id": int(cid)})
+    return out, debug
 
 
-def pick_dynamic_hashtags(news_title: str | None):
-    pool_general = [
+def fetch_quotes_by_ids(ids):
+    if not ids:
+        return {}, {"endpoint": "quotes/latest", "status": 0, "error": "no_ids"}
+
+    j, status, err = cmc_get(
+        "/v2/cryptocurrency/quotes/latest",
+        {"id": ",".join(str(i) for i in ids), "convert": "USD"},
+    )
+    debug = {"endpoint": "quotes/latest", "status": status, "error": err}
+    if not j or "data" not in j:
+        return {}, debug
+
+    data = j["data"]
+    out = {}
+    for k, v in (data or {}).items():
+        obj = v[0] if isinstance(v, list) and v else v
+        if not isinstance(obj, dict):
+            continue
+        cid = obj.get("id")
+        q = (obj.get("quote") or {}).get("USD", {}) or {}
+        out[int(cid)] = {
+            "cmc_rank": obj.get("cmc_rank"),
+            "market_cap": q.get("market_cap"),
+            "volume_24h": q.get("volume_24h"),
+        }
+    return out, debug
+
+
+def fetch_info_by_ids(ids):
+    if not ids:
+        return {}, {"endpoint": "info", "status": 0, "error": "no_ids"}
+
+    j, status, err = cmc_get(
+        "/v2/cryptocurrency/info",
+        {"id": ",".join(str(i) for i in ids)},
+    )
+    debug = {"endpoint": "info", "status": status, "error": err}
+    if not j or "data" not in j:
+        return {}, debug
+
+    data = j["data"]
+    out = {}
+    for k, v in (data or {}).items():
+        obj = v[0] if isinstance(v, list) and v else v
+        if not isinstance(obj, dict):
+            continue
+        cid = obj.get("id")
+        date_added = obj.get("date_added") or obj.get("dateAdded")
+        tags = obj.get("tags") or []
+        out[int(cid)] = {
+            "date_added": date_added,
+            "tags": [str(t) for t in tags] if isinstance(tags, list) else [],
+        }
+    return out, debug
+
+
+def parse_date_added(s: str | None):
+    if not s:
+        return None
+    try:
+        if s.endswith("Z"):
+            return datetime.fromisoformat(s.replace("Z", "+00:00"))
+        return datetime.fromisoformat(s)
+    except Exception:
+        return None
+
+
+def is_safe_token(cid: int, quotes: dict, info: dict):
+    q = quotes.get(cid) or {}
+    i = info.get(cid) or {}
+
+    rank = q.get("cmc_rank")
+    mcap = q.get("market_cap")
+    vol = q.get("volume_24h")
+
+    if not isinstance(rank, int):
+        return False
+    if rank <= 0 or rank > SAFE_MAX_CMC_RANK:
+        return False
+
+    if not isinstance(mcap, (int, float)) or mcap < SAFE_MIN_MARKET_CAP_USD:
+        return False
+    if not isinstance(vol, (int, float)) or vol < SAFE_MIN_VOLUME_24H_USD:
+        return False
+
+    dt = parse_date_added(i.get("date_added"))
+    if not dt:
+        return False
+    if dt > datetime.now(timezone.utc) - timedelta(days=SAFE_MIN_AGE_DAYS):
+        return False
+
+    tags = [t.lower().strip() for t in (i.get("tags") or [])]
+    if any(t in SAFE_EXCLUDE_TAGS for t in tags):
+        return False
+
+    return True
+
+
+def pick_dynamic_hashtags(seed_text: str):
+    pool = [
         "#Bitcoin", "#Ethereum", "#Crypto", "#DeFi", "#Web3", "#Altcoins",
-        "#Blockchain", "#CryptoMarket", "#BTC", "#ETH", "#Trading"
+        "#Blockchain", "#CryptoMarket", "#BTC", "#ETH", "#Trading", "#OnChain",
+        "#Security", "#DYOR", "#ETF", "#Markets"
     ]
-    pool_reg = ["#SEC", "#Regulation", "#ETF", "#Macro", "#Fed", "#Markets"]
-    pool_risk = ["#OnChain", "#Security", "#ScamAlert", "#RugPull", "#DYOR"]
-
-    title = (news_title or "").lower()
-    candidates = set(pool_general)
-
-    if any(k in title for k in ["bitcoin", "btc"]):
-        candidates.update(["#Bitcoin", "#BTC"])
-    if any(k in title for k in ["ethereum", "eth"]):
-        candidates.update(["#Ethereum", "#ETH"])
-    if "etf" in title:
-        candidates.update(["#ETF", "#Bitcoin"])
-    if any(k in title for k in ["sec", "regulat", "law", "ban", "court"]):
-        candidates.update(pool_reg)
-    if any(k in title for k in ["hack", "exploit", "scam", "rug", "phish", "drain"]):
-        candidates.update(pool_risk)
-    if "defi" in title:
-        candidates.update(["#DeFi", "#OnChain"])
-    if "web3" in title:
-        candidates.update(["#Web3", "#Blockchain"])
-
-    candidates.discard("#ProtocolWPO")
-    candidates.discard("#CryptoNews")
-
-    ordered = sorted(candidates)
-    if not ordered:
+    candidates = [t for t in pool if t not in FIXED_HASHTAGS]
+    if not candidates:
         return ["#Crypto", "#Bitcoin"]
 
-    seed = sha((news_title or "") + datetime.now(timezone.utc).strftime("%Y-%m-%dT%H%M"))
-    i = int(seed[:8], 16)
+    h = sha(seed_text + datetime.now(timezone.utc).strftime("%Y-%m-%dT%H"))
+    i = int(h[:8], 16)
 
-    tag1 = ordered[i % len(ordered)]
-    tag2 = ordered[(i // 7) % len(ordered)]
-    if tag2 == tag1 and len(ordered) > 1:
-        tag2 = ordered[(i // 13) % len(ordered)]
+    tag1 = candidates[i % len(candidates)]
+    tag2 = candidates[(i // 7) % len(candidates)]
+    if tag2 == tag1 and len(candidates) > 1:
+        tag2 = candidates[(i // 13) % len(candidates)]
     if tag1 == tag2:
         tag2 = "#Crypto"
-
     return [tag1, tag2]
 
 
@@ -247,111 +315,104 @@ def post_to_x(text: str):
     raise SystemExit(f"X post failed: {r.status_code} {r.text}")
 
 
+def format_list(items, mode: str):
+    if not items:
+        return ""
+    if mode == "LONG":
+        return "\n".join([f"{idx}) {it['name']} ({it['symbol']})" for idx, it in enumerate(items, start=1)])
+    return ", ".join([it["symbol"] for it in items])
+
+
 def build_tweet():
     state = load_state()
     run_count = int(state.get("run_count", 0)) + 1
 
     lang = LANGS[run_count % len(LANGS)]
-    tpl_list = TEMPLATES[lang]
-    tpl = tpl_list[run_count % len(tpl_list)]
+    hook_list = HOOKS_BY_LANG.get(lang, HOOKS_BY_LANG["EN"])
+    hook = hook_list[run_count % len(hook_list)]
+    tpl = TEMPLATES[lang][0]
 
-    hooks = HOOKS_BY_LANG.get(lang, HOOKS_BY_LANG["EN"])
-    hook = hooks[run_count % len(hooks)]
+    trending, trending_dbg = fetch_cmc_trending_latest(limit=60)
+    ids = [t["id"] for t in trending]
 
-    used_ids = set(state.get("news_ids", []))
-    fetch_limit = 20 if POST_MODE == "LONG" else 8
-    news_items, news_dbg = fetch_cmc_latest_news(limit=fetch_limit)
+    quotes, quotes_dbg = fetch_quotes_by_ids(ids)
+    info, info_dbg = fetch_info_by_ids(ids)
 
-    chosen = None
-    news_title = None
+    safe = []
+    for t in trending:
+        if is_safe_token(t["id"], quotes, info):
+            safe.append(t)
+        if len(safe) >= 15:
+            break
 
-    if news_items:
-        if POST_MODE == "LONG":
-            picked = []
-            for src, title, url, nid in news_items:
-                if nid not in used_ids:
-                    picked.append((src, title, url, nid))
-                if len(picked) >= 3:
-                    break
-            if not picked:
-                picked = [news_items[0]]
+    list_text = format_list(safe, POST_MODE)
+    ok = bool(safe)
 
-            chosen = picked[0]
-            news_title = chosen[1]
-            lines = []
-            for src, title, url, nid in picked:
-                lines.append(f"• {src}: {html.unescape(title)}")
-                lines.append(f"  {url}")
-            news = "\n".join(lines)
-        else:
-            for src, title, url, nid in news_items:
-                if nid not in used_ids:
-                    chosen = (src, title, url, nid)
-                    break
-            if not chosen:
-                chosen = news_items[0]
-
-            src, title, url, nid = chosen
-            news_title = title
-            news = f"{src}: {shorten(title, 110)}\n{url}"
-    else:
-        news = "CMC update: market moving."
-        news_title = None
-
-    dyn_tags = pick_dynamic_hashtags(news_title)
+    seed = safe[0]["symbol"] if safe else (trending[0]["symbol"] if trending else "WPO")
+    dyn_tags = pick_dynamic_hashtags(seed_text=seed)
     tags = " ".join(FIXED_HASHTAGS + dyn_tags)
 
     uniq = datetime.now(timezone.utc).strftime("• %H:%MZ")
 
-    tweet = tpl.format(
-        hook=hook,
-        news=news,
-        form=FORM_URL,
-        site=SITE_URL,
-        tags=tags,
-        uniq=uniq,
-    )
+    if not ok:
+        tweet = f"{hook}\nNO_SAFE_TRENDING_DATA\nSource: {TRENDING_URL}\nSubmit: {FORM_URL}\n{SITE_URL}\n{tags} {uniq}"
+    else:
+        tweet = tpl.format(
+            hook=hook,
+            list=list_text,
+            cmc=TRENDING_URL,
+            form=FORM_URL,
+            site=SITE_URL,
+            tags=tags,
+            uniq=uniq,
+        )
 
     extra_line = EXTRA_LINES_BY_LANG.get(lang, EXTRA_LINES_BY_LANG["EN"])
-    extra = f"{extra_line} {FORM_URL}\n{SITE_URL}".strip()
-    tweet = tweet + "\n" + extra
+    tweet = tweet + "\n" + f"{extra_line} {FORM_URL}".strip()
 
     debug = {
         "utc": datetime.now(timezone.utc).isoformat(),
         "run_count": run_count,
         "lang": lang,
         "post_mode": POST_MODE,
-        "news_debug": news_dbg,
-        "selected_count": len(news_items),
-        "chosen": {
-            "src": chosen[0] if chosen else None,
-            "id": chosen[3] if chosen else None,
+        "safe_rules": {
+            "min_mcap": SAFE_MIN_MARKET_CAP_USD,
+            "min_vol_24h": SAFE_MIN_VOLUME_24H_USD,
+            "max_rank": SAFE_MAX_CMC_RANK,
+            "min_age_days": SAFE_MIN_AGE_DAYS,
+            "exclude_tags": sorted(list(SAFE_EXCLUDE_TAGS)),
         },
+        "trending_debug": trending_dbg,
+        "quotes_debug": quotes_dbg,
+        "info_debug": info_dbg,
+        "counts": {
+            "trending_total": len(trending),
+            "safe_selected": len(safe),
+        },
+        "safe_symbols": [t["symbol"] for t in safe],
     }
     save_debug(debug)
 
     state["run_count"] = run_count
-
-    if chosen:
-        ids = state.get("news_ids", [])
-        ids.append(chosen[3])
-        state["news_ids"] = ids[-120:]
-
     save_state(state)
 
-    return tweet
+    return tweet, ok
 
 
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
 
-    tweet = build_tweet()
+    tweet, ok = build_tweet()
 
     with open(TWEET_FILE, "w", encoding="utf-8") as f:
         f.write(tweet)
 
     if POST_MODE == "LONG":
         print("POST_MODE=LONG: wrote out/tweet.txt only (no X post).")
+        return
+
+    if not ok:
+        print("No safe trending data; skipping X post.")
         return
 
     state = load_state()
