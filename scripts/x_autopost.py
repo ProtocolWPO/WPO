@@ -2,7 +2,6 @@ import os
 import json
 import hashlib
 import html
-import re
 from datetime import datetime, timezone
 
 import requests
@@ -20,39 +19,54 @@ FORM_URL = "https://protocolwpo.github.io/WPO/#submit"
 
 FIXED_HASHTAGS = ["#ProtocolWPO", "#CryptoNews"]
 
-HOOKS = [
-    "🚨 Don’t trade blind. Verify first.",
-    "⚠️ Hype fades. On-chain facts stay.",
-    "🔎 Before you buy, check the moves + news.",
-    "🧭 Fast market. Smarter evidence.",
-    "🛡️ Protect capital: verify, then trade.",
-    "📉 Pumps happen. Proof matters more.",
-]
-
-EXTRA_LINES = [
-    "举报骗局/可疑钱包（基于证据）：",
-    "Laporkan scam/dompet mencurigakan (berbasis bukti):",
-    "بلّغ عن الاحتيال/المحافظ المشبوهة (بالأدلة):",
-]
-
 LANGS = ["EN", "AR", "ZH", "ID"]
+
+HOOKS_BY_LANG = {
+    "EN": [
+        "🚨 Don’t trade blind. Verify first.",
+        "🔎 News moves markets. Evidence moves smart traders.",
+        "🛡️ Protect capital: read the signal, not the noise.",
+    ],
+    "AR": [
+        "🚨 لا تتداول أعمى… تحقق أولًا.",
+        "🔎 الأخبار تحرّك السوق… والأدلة تحمي رأس مالك.",
+        "🛡️ احمِ رأس مالك: اقرأ الإشارة لا الضجيج.",
+    ],
+    "ZH": [
+        "🚨 别盲目交易，先核实。",
+        "🔎 新闻会带动市场，证据保护资金。",
+        "🛡️ 保护本金：看信号，不看噪音。",
+    ],
+    "ID": [
+        "🚨 Jangan trading buta. Verifikasi dulu.",
+        "🔎 Berita menggerakkan market. Bukti melindungi modal.",
+        "🛡️ Lindungi modal: baca sinyal, bukan noise.",
+    ],
+}
+
+EXTRA_LINES_BY_LANG = {
+    "EN": "Report scams/suspicious wallets (evidence-based):",
+    "AR": "بلّغ عن الاحتيال/المحافظ المشبوهة (بالأدلة):",
+    "ZH": "举报骗局/可疑钱包（基于证据）：",
+    "ID": "Laporkan scam/dompet mencurigakan (berbasis bukti):",
+}
 
 TEMPLATES = {
     "EN": [
-        "{hook} BTC {btc} ({btcchg}) • ETH {eth} ({ethchg}). Headline: {news} {cta} {tags} {uniq}",
-        "Market pulse: BTC {btc} {btcchg} | ETH {eth} {ethchg}. {news} {cta} {tags} {uniq}",
+        "{hook}\n📰 {news}\nMore: {site}\n{tags} {uniq}",
+        "{hook}\nHeadline: {news}\n{site}\n{tags} {uniq}",
     ],
     "AR": [
-        "{hook} BTC {btc} ({btcchg}) | ETH {eth} ({ethchg}). آخر خبر: {news} {cta} {tags} {uniq}",
-        "نبض السوق: BTC {btc} {btcchg} • ETH {eth} {ethchg}. خبر CMC: {news} {cta} {tags} {uniq}",
+        "{hook}\n📰 {news}\nالمزيد: {site}\n{tags} {uniq}",
+        "{hook}\nآخر خبر: {news}\n{site}\n{tags} {uniq}",
     ],
     "ZH": [
-        "{hook} BTC {btc}（{btcchg}）/ ETH {eth}（{ethchg}）。最新：{news} {cta} {tags} {uniq}",
-        "市场：BTC {btc} {btcchg}｜ETH {eth} {ethchg}。新闻：{news} {cta} {tags} {uniq}",
+        "{hook}\n📰 {news}\n更多：{site}\n{tags} {uniq}",
+        "{hook}\n最新：{news}\n{site}\n{tags} {uniq}",
     ],
     "ID": [
-        "{hook} BTC {btc} ({btcchg}) • ETH {eth} ({ethchg}). Berita: {news} {cta} {tags} {uniq}",
-        "Pulse: BTC {btc} {btcchg} | ETH {eth} {ethchg}. Headline: {news} {cta} {tags} {uniq}",
+        "{hook}\n📰 {news}\nSelengkapnya: {site}\n{tags} {uniq}",
+        "{hook}\nHeadline: {news}\n{site}\n{tags} {uniq}",
     ],
 }
 
@@ -80,13 +94,6 @@ def save_debug(obj):
     os.makedirs(OUT_DIR, exist_ok=True)
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, indent=2)
-
-
-def fmt_pct(x):
-    if x is None:
-        return "n/a"
-    sign = "+" if x >= 0 else ""
-    return f"{sign}{x:.1f}%"
 
 
 def shorten(s: str, max_len: int) -> str:
@@ -126,27 +133,7 @@ def cmc_get(path: str, params: dict | None = None):
         return None, status, f"parse_or_http_error: {e} :: {text_snip}"
 
 
-def fetch_cmc_quotes(symbols=("BTC", "ETH")):
-    j, status, err = cmc_get(
-        "/v2/cryptocurrency/quotes/latest",
-        {"symbol": ",".join(symbols), "convert": "USD"},
-    )
-    if not j or "data" not in j:
-        return {}, {"endpoint": "quotes/latest", "status": status, "error": err}
-
-    out = {}
-    data = j["data"]
-    for sym in symbols:
-        arr = data.get(sym)
-        if not arr:
-            continue
-        obj = arr[0] if isinstance(arr, list) and arr else arr
-        q = obj.get("quote", {}).get("USD", {})
-        out[sym] = {"price": q.get("price"), "pct24": q.get("percent_change_24h")}
-    return out, {"endpoint": "quotes/latest", "status": status, "error": err}
-
-
-def fetch_cmc_latest_news(limit=6):
+def fetch_cmc_latest_news(limit=8):
     endpoints = [
         ("/v1/content/latest", {"start": 1, "limit": limit, "sort": "published_at", "sort_dir": "desc"}),
         ("/v1/content/posts/latest", {"start": 1, "limit": limit}),
@@ -263,22 +250,11 @@ def build_tweet():
     tpl_list = TEMPLATES[lang]
     tpl = tpl_list[run_count % len(tpl_list)]
 
-    hook = HOOKS[run_count % len(HOOKS)]
-    extra_line = EXTRA_LINES[run_count % len(EXTRA_LINES)]
-
-    quotes, quotes_dbg = fetch_cmc_quotes(("BTC", "ETH"))
-    btc_p = quotes.get("BTC", {}).get("price")
-    btc_c = quotes.get("BTC", {}).get("pct24")
-    eth_p = quotes.get("ETH", {}).get("price")
-    eth_c = quotes.get("ETH", {}).get("pct24")
-
-    btc = f"${btc_p:,.0f}" if isinstance(btc_p, (int, float)) else "n/a"
-    eth = f"${eth_p:,.0f}" if isinstance(eth_p, (int, float)) else "n/a"
-    btcchg = fmt_pct(btc_c) if isinstance(btc_c, (int, float)) else "n/a"
-    ethchg = fmt_pct(eth_c) if isinstance(eth_c, (int, float)) else "n/a"
+    hooks = HOOKS_BY_LANG.get(lang, HOOKS_BY_LANG["EN"])
+    hook = hooks[run_count % len(hooks)]
 
     used_ids = set(state.get("news_ids", []))
-    news_items, news_dbg = fetch_cmc_latest_news(limit=6)
+    news_items, news_dbg = fetch_cmc_latest_news(limit=8)
 
     chosen = None
     for src, title, url, nid in news_items:
@@ -288,12 +264,12 @@ def build_tweet():
     if not chosen and news_items:
         chosen = news_items[0]
 
-    news_title = None
     if chosen:
         src, title, url, nid = chosen
         news_title = title
-        news = f"{src}: {shorten(title, 70)} {url}"
+        news = f"{src}: {shorten(title, 90)}\n{url}"
     else:
+        news_title = None
         news = "CMC update: market moving fast."
 
     dyn_tags = pick_dynamic_hashtags(news_title)
@@ -301,26 +277,23 @@ def build_tweet():
 
     uniq = datetime.now(timezone.utc).strftime("• %H:%MZ")
 
-    cta = FORM_URL
-
     tweet = tpl.format(
         hook=hook,
-        btc=btc, btcchg=btcchg,
-        eth=eth, ethchg=ethchg,
         news=news,
-        cta=cta,
+        site=SITE_URL,
         tags=tags,
         uniq=uniq,
     )
 
+    extra_line = EXTRA_LINES_BY_LANG.get(lang, EXTRA_LINES_BY_LANG["EN"])
     extra = f"{extra_line} {FORM_URL}"
     if len(tweet) + 1 + len(extra) <= 280:
         tweet = tweet + "\n" + extra
 
     if len(tweet) > 280 and chosen:
-        tweet = tweet.replace(shorten(chosen[1], 70), shorten(chosen[1], 48))
-    if len(tweet) > 280:
-        tweet = tweet.replace(tags, " ".join(FIXED_HASHTAGS + dyn_tags[:2]))
+        tweet = tweet.replace(shorten(chosen[1], 90), shorten(chosen[1], 70))
+    if len(tweet) > 280 and chosen:
+        tweet = tweet.replace(shorten(chosen[1], 70), shorten(chosen[1], 58))
     if len(tweet) > 280:
         tweet = shorten(tweet, 280)
 
@@ -328,19 +301,20 @@ def build_tweet():
         "utc": datetime.now(timezone.utc).isoformat(),
         "run_count": run_count,
         "lang": lang,
-        "quotes_debug": quotes_dbg,
         "news_debug": news_dbg,
+        "chosen": {
+            "src": chosen[0] if chosen else None,
+            "id": chosen[3] if chosen else None,
+        },
     }
     save_debug(debug)
 
     state["run_count"] = run_count
-    save_state(state)
-
     if chosen:
         ids = state.get("news_ids", [])
         ids.append(chosen[3])
-        state["news_ids"] = ids[-50:]
-        save_state(state)
+        state["news_ids"] = ids[-80:]
+    save_state(state)
 
     return tweet
 
