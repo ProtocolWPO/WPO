@@ -1,12 +1,43 @@
 {
-  "utc": "2026-02-07T16:22:32.890496+00:00",
-  "run_count": 23,
-  "lang": "ID",
+  "utc": "2026-02-07T16:38:44.086355+00:00",
+  "run_count": 24,
+  "lang": "EN",
   "trending_debug": {
-    "source": "public_data_api",
-    "status": 200,
-    "error": ""
+    "tried": [
+      {
+        "source": "cmc_pro",
+        "status": 403,
+        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-07T16:38:43.673Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
+      },
+      {
+        "source": "cmc_public",
+        "status": 200,
+        "error": ""
+      },
+      {
+        "source": "coingecko",
+        "status": 200,
+        "error": ""
+      }
+    ],
+    "selected": "coingecko"
   },
-  "selected_count": 0,
-  "symbols": []
+  "selected_count": 15,
+  "symbols": [
+    "BTC",
+    "PENGU",
+    "HYPE",
+    "ETH",
+    "TAO",
+    "ONDO",
+    "SUI",
+    "XRP",
+    "SOL",
+    "MON",
+    "KAS",
+    "ASTER",
+    "BERA",
+    "JUP",
+    "INJ"
+  ]
 }

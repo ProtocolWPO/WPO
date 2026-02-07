@@ -1,1 +1,6 @@
-NO_TRENDING_DATA
+🔥 Trending (1H) — Top 15
+Top 15: BTC, PENGU, HYPE, ETH, TAO, ONDO, SUI, XRP, SOL, MON, KAS, ASTER, BERA, JUP, INJ
+Source: https://coinmarketcap.com/?tableRankBy=trending_all_1h
+Submit: https://protocolwpo.github.io/WPO/#submit
+Site: https://protocolwpo.github.io/WPO/
+#ProtocolWPO #CryptoNews #Trending #Altcoins • 16:38:44Z • run#24
