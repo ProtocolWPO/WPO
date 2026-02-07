@@ -1,0 +1,11 @@
+{
+  "utc": "2026-02-07T16:08:26.471739+00:00",
+  "run_count": 22,
+  "lang": "ZH",
+  "trending_debug": {
+    "endpoint": "/v1/cryptocurrency/trending/latest",
+    "status": 403,
+    "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-07T16:08:26.431Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
+  },
+  "selected_count": 0
+}
