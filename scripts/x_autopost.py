@@ -39,20 +39,20 @@ LANGS = ["EN", "AR", "ZH", "ID"]
 
 TEMPLATES = {
     "EN": [
-        "{hook} BTC {btc} ({btcchg}) • ETH {eth} ({ethchg}). Headline: {news} {cta} {tags}",
-        "Market pulse: BTC {btc} {btcchg} | ETH {eth} {ethchg}. {news} {cta} {tags}",
+        "{hook} BTC {btc} ({btcchg}) • ETH {eth} ({ethchg}). Headline: {news} {cta} {tags} {uniq}",
+        "Market pulse: BTC {btc} {btcchg} | ETH {eth} {ethchg}. {news} {cta} {tags} {uniq}",
     ],
     "AR": [
-        "{hook} BTC {btc} ({btcchg}) | ETH {eth} ({ethchg}). آخر خبر: {news} {cta} {tags}",
-        "نبض السوق: BTC {btc} {btcchg} • ETH {eth} {ethchg}. خبر CMC: {news} {cta} {tags}",
+        "{hook} BTC {btc} ({btcchg}) | ETH {eth} ({ethchg}). آخر خبر: {news} {cta} {tags} {uniq}",
+        "نبض السوق: BTC {btc} {btcchg} • ETH {eth} {ethchg}. خبر CMC: {news} {cta} {tags} {uniq}",
     ],
     "ZH": [
-        "{hook} BTC {btc}（{btcchg}）/ ETH {eth}（{ethchg}）。最新：{news} {cta} {tags}",
-        "市场：BTC {btc} {btcchg}｜ETH {eth} {ethchg}。新闻：{news} {cta} {tags}",
+        "{hook} BTC {btc}（{btcchg}）/ ETH {eth}（{ethchg}）。最新：{news} {cta} {tags} {uniq}",
+        "市场：BTC {btc} {btcchg}｜ETH {eth} {ethchg}。新闻：{news} {cta} {tags} {uniq}",
     ],
     "ID": [
-        "{hook} BTC {btc} ({btcchg}) • ETH {eth} ({ethchg}). Berita: {news} {cta} {tags}",
-        "Pulse: BTC {btc} {btcchg} | ETH {eth} {ethchg}. Headline: {news} {cta} {tags}",
+        "{hook} BTC {btc} ({btcchg}) • ETH {eth} ({ethchg}). Berita: {news} {cta} {tags} {uniq}",
+        "Pulse: BTC {btc} {btcchg} | ETH {eth} {ethchg}. Headline: {news} {cta} {tags} {uniq}",
     ],
 }
 
@@ -212,7 +212,7 @@ def pick_dynamic_hashtags(news_title: str | None):
     if not ordered:
         return ["#Crypto", "#Bitcoin"]
 
-    seed = sha((news_title or "") + datetime.now(timezone.utc).strftime("%Y-%m-%dT%H"))
+    seed = sha((news_title or "") + datetime.now(timezone.utc).strftime("%Y-%m-%dT%H%M"))
     i = int(seed[:8], 16)
 
     tag1 = ordered[i % len(ordered)]
@@ -238,9 +238,21 @@ def post_to_x(text: str):
     )
 
     r = oauth.post(X_POST_URL, json={"text": text}, timeout=30)
-    if r.status_code not in (200, 201):
-        raise SystemExit(f"X post failed: {r.status_code} {r.text}")
-    return r.json()
+
+    if r.status_code in (200, 201):
+        return r.json()
+
+    if r.status_code == 403:
+        try:
+            j = r.json()
+        except Exception:
+            j = {"detail": r.text}
+        detail = str(j.get("detail", "")).lower()
+        if "duplicate" in detail:
+            print("X rejected duplicate content — skipping without failure.")
+            return {"skipped": True, "reason": "duplicate"}
+
+    raise SystemExit(f"X post failed: {r.status_code} {r.text}")
 
 
 def build_tweet():
@@ -287,6 +299,8 @@ def build_tweet():
     dyn_tags = pick_dynamic_hashtags(news_title)
     tags = " ".join(FIXED_HASHTAGS + dyn_tags)
 
+    uniq = datetime.now(timezone.utc).strftime("• %H:%MZ")
+
     cta = FORM_URL
 
     tweet = tpl.format(
@@ -296,6 +310,7 @@ def build_tweet():
         news=news,
         cta=cta,
         tags=tags,
+        uniq=uniq,
     )
 
     extra = f"{extra_line} {FORM_URL}"
@@ -346,7 +361,20 @@ def main():
         return
 
     resp = post_to_x(tweet)
-    tweet_id = resp.get("data", {}).get("id")
+
+    if isinstance(resp, dict) and resp.get("skipped"):
+        state.update({
+            "last_hash": h,
+            "last_tweet_id": None,
+            "last_text": tweet,
+            "posted_at_utc": datetime.now(timezone.utc).isoformat(),
+            "skipped_reason": resp.get("reason"),
+        })
+        save_state(state)
+        print("Skipped posting to X due to duplicate content.")
+        return
+
+    tweet_id = (resp or {}).get("data", {}).get("id")
 
     state.update({
         "last_hash": h,
