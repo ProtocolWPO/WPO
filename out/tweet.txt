@@ -1,7 +1,7 @@
-🧭 الترند الآن (ساعة) — مُرشّحة للأصول الأكثر أمانًا.
+🛡️ 关注度地图（1小时）— 仅更安全选择。
 NO_SAFE_TRENDING_DATA
 Source: https://coinmarketcap.com/?tableRankBy=trending_all_1h
 Submit: https://protocolwpo.github.io/WPO/#submit
 https://protocolwpo.github.io/WPO/
-#ProtocolWPO #CryptoNews #Markets #DYOR • 14:01Z
-بلّغ عن محافظ مشبوهة: https://protocolwpo.github.io/WPO/#submit
+#ProtocolWPO #CryptoNews #Markets #DYOR • 14:34Z
+举报可疑钱包： https://protocolwpo.github.io/WPO/#submit
