@@ -19,6 +19,7 @@ FORM_URL = "https://protocolwpo.github.io/WPO/#submit"
 TRENDING_URL = "https://coinmarketcap.com/?tableRankBy=trending_all_1h"
 
 FIXED_HASHTAGS = ["#ProtocolWPO", "#CryptoNews"]
+EXTRA_HASHTAGS = ["#Trending", "#Altcoins"]
 LANGS = ["EN", "AR", "ZH", "ID"]
 
 HOOKS_BY_LANG = {
@@ -44,18 +45,11 @@ HOOKS_BY_LANG = {
     ],
 }
 
-EXTRA_LINES_BY_LANG = {
-    "EN": "Report suspicious wallets:",
-    "AR": "بلّغ عن محافظ مشبوهة:",
-    "ZH": "举报可疑钱包：",
-    "ID": "Laporkan dompet mencurigakan:",
-}
-
-TEMPLATES = {
-    "EN": ["{hook}\nTop 15: {list}\nSource: {cmc}\n{site}\n{tags} {uniq}\n{extra} {form}"],
-    "AR": ["{hook}\nأفضل 15: {list}\nالمصدر: {cmc}\n{site}\n{tags} {uniq}\n{extra} {form}"],
-    "ZH": ["{hook}\n前15：{list}\n来源：{cmc}\n{site}\n{tags} {uniq}\n{extra} {form}"],
-    "ID": ["{hook}\nTop 15: {list}\nSumber: {cmc}\n{site}\n{tags} {uniq}\n{extra} {form}"],
+LABELS_BY_LANG = {
+    "EN": {"top": "Top 15", "source": "Source", "verify": "Verify/Submit", "report": "Report"},
+    "AR": {"top": "أفضل 15", "source": "المصدر", "verify": "تحقق/إرسال", "report": "بلّغ"},
+    "ZH": {"top": "前15", "source": "来源", "verify": "核实/提交", "report": "举报"},
+    "ID": {"top": "Top 15", "source": "Sumber", "verify": "Verifikasi/Kirim", "report": "Laporkan"},
 }
 
 CMC_BASE = "https://pro-api.coinmarketcap.com"
@@ -120,14 +114,10 @@ def fetch_trending_top15():
         {"start": 1, "limit": 15, "convert": "USD"},
     )
 
-    debug = {
-        "endpoint": "/v1/cryptocurrency/trending/latest",
-        "status": status,
-        "error": err,
-    }
+    dbg = {"endpoint": "/v1/cryptocurrency/trending/latest", "status": status, "error": err}
 
     if not j or "data" not in j:
-        return [], debug
+        return [], dbg
 
     data = j.get("data")
     if isinstance(data, dict):
@@ -144,7 +134,7 @@ def fetch_trending_top15():
         if symbol:
             out.append({"symbol": symbol, "name": html.unescape(name) if name else ""})
 
-    return out[:15], debug
+    return out[:15], dbg
 
 
 def post_to_x(text: str):
@@ -184,7 +174,7 @@ def build_tweet():
     lang = LANGS[run_count % len(LANGS)]
     hook_list = HOOKS_BY_LANG.get(lang, HOOKS_BY_LANG["EN"])
     hook = hook_list[run_count % len(hook_list)]
-    tpl = TEMPLATES[lang][0]
+    labels = LABELS_BY_LANG.get(lang, LABELS_BY_LANG["EN"])
 
     items, dbg = fetch_trending_top15()
     if not items:
@@ -202,21 +192,16 @@ def build_tweet():
     symbols = [it["symbol"] for it in items]
     list_text = ", ".join(symbols)
 
-    tags_extra = ["#Trending", "#Altcoins"]
-    tags = " ".join(FIXED_HASHTAGS + tags_extra)
-
+    tags = " ".join(FIXED_HASHTAGS + EXTRA_HASHTAGS)
     uniq = datetime.now(timezone.utc).strftime("• %H:%MZ")
-    extra = EXTRA_LINES_BY_LANG.get(lang, EXTRA_LINES_BY_LANG["EN"])
 
-    tweet = tpl.format(
-        hook=hook,
-        list=list_text,
-        cmc=TRENDING_URL,
-        site=SITE_URL,
-        tags=tags,
-        uniq=uniq,
-        extra=extra,
-        form=FORM_URL,
+    tweet = (
+        f"{hook}\n"
+        f"{labels['top']}: {list_text}\n"
+        f"{labels['source']}: {TRENDING_URL}\n"
+        f"{labels['verify']}: {FORM_URL}\n"
+        f"{SITE_URL}\n"
+        f"{tags} {uniq}"
     )
 
     save_debug({
