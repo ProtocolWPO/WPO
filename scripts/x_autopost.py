@@ -14,8 +14,6 @@ DEBUG_FILE = os.path.join(OUT_DIR, "cmc_debug.json")
 X_POST_URL = "https://api.x.com/2/tweets"
 
 SITE_URL = "https://protocolwpo.github.io/WPO/"
-FORM_URL = "https://protocolwpo.github.io/WPO/#submit"
-TRENDING_URL = "https://coinmarketcap.com/?tableRankBy=trending_all_1h"
 
 FIXED_HASHTAGS = ["#ProtocolWPO", "#CryptoNews"]
 EXTRA_HASHTAGS = ["#Trending", "#Altcoins"]
