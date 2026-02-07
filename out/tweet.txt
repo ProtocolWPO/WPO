@@ -1,7 +1,1 @@
-🔥 Trending CMC (1J) — daftar aman saja.
-NO_SAFE_TRENDING_DATA
-Source: https://coinmarketcap.com/?tableRankBy=trending_all_1h
-Submit: https://protocolwpo.github.io/WPO/#submit
-https://protocolwpo.github.io/WPO/
-#ProtocolWPO #CryptoNews #Markets #DYOR • 14:56Z
-Laporkan dompet mencurigakan: https://protocolwpo.github.io/WPO/#submit
+NO_TRENDING_DATA
