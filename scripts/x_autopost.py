@@ -21,6 +21,8 @@ FIXED_HASHTAGS = ["#ProtocolWPO", "#CryptoNews"]
 
 LANGS = ["EN", "AR", "ZH", "ID"]
 
+POST_MODE = os.getenv("POST_MODE", "X").upper()  # "X" or "LONG"
+
 HOOKS_BY_LANG = {
     "EN": [
         "🚨 Don’t trade blind. Verify first.",
@@ -45,28 +47,28 @@ HOOKS_BY_LANG = {
 }
 
 EXTRA_LINES_BY_LANG = {
-    "EN": "Report scams/suspicious wallets (evidence-based):",
-    "AR": "بلّغ عن الاحتيال/المحافظ المشبوهة (بالأدلة):",
-    "ZH": "举报骗局/可疑钱包（基于证据）：",
-    "ID": "Laporkan scam/dompet mencurigakan (berbasis bukti):",
+    "EN": "Report suspicious wallets:",
+    "AR": "بلّغ عن محافظ مشبوهة:",
+    "ZH": "举报可疑钱包：",
+    "ID": "Laporkan dompet mencurigakan:",
 }
 
 TEMPLATES = {
     "EN": [
-        "{hook}\n📰 {news}\nMore: {site}\n{tags} {uniq}",
-        "{hook}\nHeadline: {news}\n{site}\n{tags} {uniq}",
+        "{hook}\n📰 {news}\nSubmit: {form}\nMore: {site}\n{tags} {uniq}",
+        "{hook}\nHeadline:\n{news}\nSubmit: {form}\nMore: {site}\n{tags} {uniq}",
     ],
     "AR": [
-        "{hook}\n📰 {news}\nالمزيد: {site}\n{tags} {uniq}",
-        "{hook}\nآخر خبر: {news}\n{site}\n{tags} {uniq}",
+        "{hook}\n📰 {news}\nإرسال: {form}\nالمزيد: {site}\n{tags} {uniq}",
+        "{hook}\nآخر خبر:\n{news}\nإرسال: {form}\nالمزيد: {site}\n{tags} {uniq}",
     ],
     "ZH": [
-        "{hook}\n📰 {news}\n更多：{site}\n{tags} {uniq}",
-        "{hook}\n最新：{news}\n{site}\n{tags} {uniq}",
+        "{hook}\n📰 {news}\n提交：{form}\n更多：{site}\n{tags} {uniq}",
+        "{hook}\n最新：\n{news}\n提交：{form}\n更多：{site}\n{tags} {uniq}",
     ],
     "ID": [
-        "{hook}\n📰 {news}\nSelengkapnya: {site}\n{tags} {uniq}",
-        "{hook}\nHeadline: {news}\n{site}\n{tags} {uniq}",
+        "{hook}\n📰 {news}\nKirim: {form}\nSelengkapnya: {site}\n{tags} {uniq}",
+        "{hook}\nHeadline:\n{news}\nKirim: {form}\nSelengkapnya: {site}\n{tags} {uniq}",
     ],
 }
 
@@ -151,11 +153,14 @@ def fetch_cmc_latest_news(limit=8):
 
         out = []
         for it in j["data"]:
-            title = (it.get("title") or "").strip()
-            url = (it.get("url") or "").strip()
-            src = (it.get("source_name") or it.get("sourceName") or "CMC").strip()
+            title = (it.get("title") or it.get("headline") or "").strip()
+            url = (it.get("url") or it.get("source_url") or it.get("post_url") or it.get("link") or "").strip()
+            src = (it.get("source_name") or it.get("sourceName") or it.get("source") or "CMC").strip()
             nid = it.get("id") or sha((title + url)[:200])
-            if title and url:
+
+            if title:
+                if not url:
+                    url = SITE_URL
                 out.append((src, html.unescape(title), url, str(nid)))
 
         if out:
@@ -254,23 +259,44 @@ def build_tweet():
     hook = hooks[run_count % len(hooks)]
 
     used_ids = set(state.get("news_ids", []))
-    news_items, news_dbg = fetch_cmc_latest_news(limit=8)
+    fetch_limit = 20 if POST_MODE == "LONG" else 8
+    news_items, news_dbg = fetch_cmc_latest_news(limit=fetch_limit)
 
     chosen = None
-    for src, title, url, nid in news_items:
-        if nid not in used_ids:
-            chosen = (src, title, url, nid)
-            break
-    if not chosen and news_items:
-        chosen = news_items[0]
+    news_title = None
 
-    if chosen:
-        src, title, url, nid = chosen
-        news_title = title
-        news = f"{src}: {shorten(title, 90)}\n{url}"
+    if news_items:
+        if POST_MODE == "LONG":
+            picked = []
+            for src, title, url, nid in news_items:
+                if nid not in used_ids:
+                    picked.append((src, title, url, nid))
+                if len(picked) >= 3:
+                    break
+            if not picked:
+                picked = [news_items[0]]
+
+            chosen = picked[0]
+            news_title = chosen[1]
+            lines = []
+            for src, title, url, nid in picked:
+                lines.append(f"• {src}: {html.unescape(title)}")
+                lines.append(f"  {url}")
+            news = "\n".join(lines)
+        else:
+            for src, title, url, nid in news_items:
+                if nid not in used_ids:
+                    chosen = (src, title, url, nid)
+                    break
+            if not chosen:
+                chosen = news_items[0]
+
+            src, title, url, nid = chosen
+            news_title = title
+            news = f"{src}: {shorten(title, 110)}\n{url}"
     else:
+        news = "CMC update: market moving."
         news_title = None
-        news = "CMC update: market moving fast."
 
     dyn_tags = pick_dynamic_hashtags(news_title)
     tags = " ".join(FIXED_HASHTAGS + dyn_tags)
@@ -280,28 +306,23 @@ def build_tweet():
     tweet = tpl.format(
         hook=hook,
         news=news,
+        form=FORM_URL,
         site=SITE_URL,
         tags=tags,
         uniq=uniq,
     )
 
     extra_line = EXTRA_LINES_BY_LANG.get(lang, EXTRA_LINES_BY_LANG["EN"])
-    extra = f"{extra_line} {FORM_URL}"
-    if len(tweet) + 1 + len(extra) <= 280:
-        tweet = tweet + "\n" + extra
-
-    if len(tweet) > 280 and chosen:
-        tweet = tweet.replace(shorten(chosen[1], 90), shorten(chosen[1], 70))
-    if len(tweet) > 280 and chosen:
-        tweet = tweet.replace(shorten(chosen[1], 70), shorten(chosen[1], 58))
-    if len(tweet) > 280:
-        tweet = shorten(tweet, 280)
+    extra = f"{extra_line} {FORM_URL}\n{SITE_URL}".strip()
+    tweet = tweet + "\n" + extra
 
     debug = {
         "utc": datetime.now(timezone.utc).isoformat(),
         "run_count": run_count,
         "lang": lang,
+        "post_mode": POST_MODE,
         "news_debug": news_dbg,
+        "selected_count": len(news_items),
         "chosen": {
             "src": chosen[0] if chosen else None,
             "id": chosen[3] if chosen else None,
@@ -310,10 +331,12 @@ def build_tweet():
     save_debug(debug)
 
     state["run_count"] = run_count
+
     if chosen:
         ids = state.get("news_ids", [])
         ids.append(chosen[3])
-        state["news_ids"] = ids[-80:]
+        state["news_ids"] = ids[-120:]
+
     save_state(state)
 
     return tweet
@@ -326,6 +349,10 @@ def main():
 
     with open(TWEET_FILE, "w", encoding="utf-8") as f:
         f.write(tweet)
+
+    if POST_MODE == "LONG":
+        print("POST_MODE=LONG: wrote out/tweet.txt only (no X post).")
+        return
 
     state = load_state()
     h = sha(tweet)
