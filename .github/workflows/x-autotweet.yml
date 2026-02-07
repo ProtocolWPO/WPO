@@ -38,9 +38,18 @@ jobs:
           git config user.name "x-bot"
           git config user.email "x-bot@users.noreply.github.com"
 
-          git pull --rebase origin main
+          # Stash local changes before pulling
+          git stash push -m "autopost-stash" || true
 
+          # Pull latest changes safely
+          git pull --rebase origin main || true
+
+          # Restore stashed changes
+          git stash pop || true
+
+          # Commit updated files
           git add out/tweet.txt out/last_post.json out/cmc_debug.json
-          git commit -m "x: auto post" || exit 0
+          git commit -m "x: auto post" || echo "Nothing to commit"
 
-          git push origin HEAD:main
+          # Push without failing the job
+          git push origin HEAD:main || true
