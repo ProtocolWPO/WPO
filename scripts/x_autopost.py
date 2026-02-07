@@ -14,6 +14,8 @@ DEBUG_FILE = os.path.join(OUT_DIR, "cmc_debug.json")
 X_POST_URL = "https://api.x.com/2/tweets"
 
 SITE_URL = "https://protocolwpo.github.io/WPO/"
+FORM_URL = "https://protocolwpo.github.io/WPO/#submit"
+TRENDING_URL = "https://coinmarketcap.com/?tableRankBy=trending_all_1h"
 
 FIXED_HASHTAGS = ["#ProtocolWPO", "#CryptoNews"]
 EXTRA_HASHTAGS = ["#Trending", "#Altcoins"]
@@ -44,10 +46,33 @@ HOOKS_BY_LANG = {
 }
 
 LABELS_BY_LANG = {
-    "EN": {"top": "Top 15", "source": "Source", "submit": "Submit", "site": "Site", "fallback": "Trending data temporarily unavailable."},
-    "AR": {"top": "أفضل 15", "source": "المصدر", "submit": "إرسال", "site": "الموقع", "fallback": "بيانات الترند غير متاحة مؤقتًا."},
-    "ZH": {"top": "前15", "source": "来源", "submit": "提交", "site": "站点", "fallback": "趋势数据暂不可用。"},
-    "ID": {"top": "Top 15", "source": "Sumber", "submit": "Kirim", "site": "Situs", "fallback": "Data trending sementara tidak tersedia."},
+    "EN": {"top": "Top 15", "site": "More", "fallback": "Trending data temporarily unavailable."},
+    "AR": {"top": "أفضل 15", "site": "المزيد", "fallback": "بيانات الترند غير متاحة مؤقتًا."},
+    "ZH": {"top": "前15", "site": "更多", "fallback": "趋势数据暂不可用。"},
+    "ID": {"top": "Top 15", "site": "Selengkapnya", "fallback": "Data trending sementara tidak tersedia."},
+}
+
+REPORT_LINES_BY_LANG = {
+    "EN": [
+        "🚨 Saw suspicious movement or a scam project? Report here:",
+        "🛡️ Protect traders — report suspicious wallets/projects here:",
+        "🔎 Submit evidence of suspicious activity here:",
+    ],
+    "AR": [
+        "🚨 لاحظت حركة مشبوهة أو مشروع احتيالي؟ بلّغ هنا:",
+        "🛡️ احمِ المتداولين — بلّغ عن محافظ/مشاريع مشبوهة هنا:",
+        "🔎 أرسل الأدلة عن نشاط مشبوه هنا:",
+    ],
+    "ZH": [
+        "🚨 发现可疑动向或诈骗项目？在此举报：",
+        "🛡️ 保护交易者：在此举报可疑钱包/项目：",
+        "🔎 在此提交可疑活动证据：",
+    ],
+    "ID": [
+        "🚨 Lihat pergerakan mencurigakan atau proyek scam? Laporkan di sini:",
+        "🛡️ Lindungi trader — laporkan dompet/proyek mencurigakan di sini:",
+        "🔎 Kirim bukti aktivitas mencurigakan di sini:",
+    ],
 }
 
 CMC_PRO_BASE = "https://pro-api.coinmarketcap.com"
@@ -92,15 +117,8 @@ def _req_json(url: str, params=None, headers=None, timeout=30):
 
 
 def fetch_trending_top15():
-    """
-    Fallback order:
-    1) CMC Pro Trending (if CMC_KEY exists)
-    2) CMC Public Data API (site endpoint)
-    3) CoinGecko Trending (last resort, ensures posting continues)
-    """
     dbg = {"tried": []}
 
-    # 1) CMC Pro
     cmc_key = os.getenv("CMC_KEY")
     if cmc_key:
         url = f"{CMC_PRO_BASE}/v1/cryptocurrency/trending/latest"
@@ -121,7 +139,6 @@ def fetch_trending_top15():
                 dbg["selected"] = "cmc_pro"
                 return out[:15], dbg
 
-    # 2) CMC public data-api (site)
     url = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/listing"
     params = {
         "start": 1,
@@ -154,7 +171,6 @@ def fetch_trending_top15():
             dbg["selected"] = "cmc_public"
             return out[:15], dbg
 
-    # 3) CoinGecko trending (fallback)
     url = "https://api.coingecko.com/api/v3/search/trending"
     headers = {"Accept": "application/json", "User-Agent": "WPO-trending-bot/1.0"}
     j, status, err = _req_json(url, headers=headers, timeout=20)
@@ -217,6 +233,9 @@ def build_tweet():
 
     symbols, dbg = fetch_trending_top15()
 
+    report_lines = REPORT_LINES_BY_LANG.get(lang, REPORT_LINES_BY_LANG["EN"])
+    report_line = report_lines[run_count % len(report_lines)]
+
     debug_payload = {
         "utc": datetime.now(timezone.utc).isoformat(),
         "run_count": run_count,
@@ -234,12 +253,11 @@ def build_tweet():
     uniq = f"• {datetime.now(timezone.utc).strftime('%H:%M:%SZ')} • run#{run_count}"
 
     if symbols:
-        list_text = ", ".join(symbols)
+        list_text = ", ".join([f"${s}" for s in symbols])
         tweet = (
             f"{hook}\n"
             f"{labels['top']}: {list_text}\n"
-            f"{labels['source']}: {TRENDING_URL}\n"
-            f"{labels['submit']}: {FORM_URL}\n"
+            f"{report_line} {FORM_URL}\n"
             f"{labels['site']}: {SITE_URL}\n"
             f"{tags} {uniq}"
         )
@@ -248,8 +266,7 @@ def build_tweet():
     tweet = (
         f"{hook}\n"
         f"{labels['fallback']}\n"
-        f"{labels['source']}: {TRENDING_URL}\n"
-        f"{labels['submit']}: {FORM_URL}\n"
+        f"{report_line} {FORM_URL}\n"
         f"{labels['site']}: {SITE_URL}\n"
         f"{tags} {uniq}"
     )
