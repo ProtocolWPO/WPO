@@ -24,33 +24,35 @@ LANGS = ["EN", "AR", "ZH", "ID"]
 
 HOOKS_BY_LANG = {
     "EN": [
-        "🔥 CMC Trending (1H) — Top 15",
+        "🔥 Trending (1H) — Top 15",
         "📈 Trending now (1H) — Top 15",
         "🧭 Attention map (1H) — Top 15",
     ],
     "AR": [
-        "🔥 ترند CMC (ساعة) — أفضل 15",
+        "🔥 الترند (ساعة) — أفضل 15",
         "📈 الترند الآن (ساعة) — أفضل 15",
         "🧭 خريطة الانتباه (ساعة) — أفضل 15",
     ],
     "ZH": [
-        "🔥 CMC 1小时趋势榜 — 前15",
+        "🔥 1小时趋势榜 — 前15",
         "📈 当前热门（1小时）— 前15",
         "🧭 关注度地图（1小时）— 前15",
     ],
     "ID": [
-        "🔥 Trending CMC (1J) — Top 15",
+        "🔥 Trending (1J) — Top 15",
         "📈 Lagi trending (1J) — Top 15",
         "🧭 Peta perhatian (1J) — Top 15",
     ],
 }
 
 LABELS_BY_LANG = {
-    "EN": {"top": "Top 15", "source": "Source", "submit": "Submit", "site": "Site"},
-    "AR": {"top": "أفضل 15", "source": "المصدر", "submit": "إرسال", "site": "الموقع"},
-    "ZH": {"top": "前15", "source": "来源", "submit": "提交", "site": "站点"},
-    "ID": {"top": "Top 15", "source": "Sumber", "submit": "Kirim", "site": "Situs"},
+    "EN": {"top": "Top 15", "source": "Source", "submit": "Submit", "site": "Site", "fallback": "Trending data temporarily unavailable."},
+    "AR": {"top": "أفضل 15", "source": "المصدر", "submit": "إرسال", "site": "الموقع", "fallback": "بيانات الترند غير متاحة مؤقتًا."},
+    "ZH": {"top": "前15", "source": "来源", "submit": "提交", "site": "站点", "fallback": "趋势数据暂不可用。"},
+    "ID": {"top": "Top 15", "source": "Sumber", "submit": "Kirim", "site": "Situs", "fallback": "Data trending sementara tidak tersedia."},
 }
+
+CMC_PRO_BASE = "https://pro-api.coinmarketcap.com"
 
 
 def sha(text: str) -> str:
@@ -76,11 +78,52 @@ def save_debug(obj: dict) -> None:
         json.dump(obj, f, ensure_ascii=False, indent=2)
 
 
-def fetch_trending_top15_public():
+def _req_json(url: str, params=None, headers=None, timeout=30):
+    try:
+        r = requests.get(url, params=params or {}, headers=headers or {}, timeout=timeout)
+        status = r.status_code
+        text_snip = (r.text or "")[:800]
+        if status != 200:
+            return None, status, text_snip
+        try:
+            return r.json(), status, ""
+        except Exception as e:
+            return None, status, f"json_parse_error: {e} :: {text_snip}"
+    except Exception as e:
+        return None, -1, f"request_error: {e}"
+
+
+def fetch_trending_top15():
     """
-    Uses CoinMarketCap public data-api endpoint (no CMC_KEY needed).
-    This endpoint is used by the website and may change over time.
+    Fallback order:
+    1) CMC Pro Trending (if CMC_KEY exists)
+    2) CMC Public Data API (site endpoint)
+    3) CoinGecko Trending (last resort, ensures posting continues)
     """
+    dbg = {"tried": []}
+
+    # 1) CMC Pro
+    cmc_key = os.getenv("CMC_KEY")
+    if cmc_key:
+        url = f"{CMC_PRO_BASE}/v1/cryptocurrency/trending/latest"
+        headers = {
+            "X-CMC_PRO_API_KEY": cmc_key,
+            "Accept": "application/json",
+            "User-Agent": "WPO-trending-bot/1.0",
+        }
+        j, status, err = _req_json(url, params={"start": 1, "limit": 15}, headers=headers, timeout=30)
+        dbg["tried"].append({"source": "cmc_pro", "status": status, "error": err})
+        if j and isinstance(j.get("data"), list):
+            out = []
+            for it in j["data"]:
+                sym = (it.get("symbol") or "").strip()
+                if sym:
+                    out.append(sym)
+            if out:
+                dbg["selected"] = "cmc_pro"
+                return out[:15], dbg
+
+    # 2) CMC public data-api (site)
     url = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/listing"
     params = {
         "start": 1,
@@ -90,7 +133,7 @@ def fetch_trending_top15_public():
         "timeframe": "1h",
         "cryptoType": "all",
         "tagType": "all",
-        "convertId": 2781,  # USD
+        "convertId": 2781,
     }
     headers = {
         "Accept": "application/json",
@@ -98,31 +141,41 @@ def fetch_trending_top15_public():
         "Referer": "https://coinmarketcap.com/",
         "Origin": "https://coinmarketcap.com",
     }
+    j, status, err = _req_json(url, params=params, headers=headers, timeout=30)
+    dbg["tried"].append({"source": "cmc_public", "status": status, "error": err})
+    if j:
+        data = (j.get("data") or {})
+        lst = data.get("cryptoCurrencyList") or data.get("list") or []
+        out = []
+        if isinstance(lst, list):
+            for it in lst:
+                sym = (it.get("symbol") or "").strip()
+                if sym:
+                    out.append(sym)
+        if out:
+            dbg["selected"] = "cmc_public"
+            return out[:15], dbg
 
-    try:
-        r = requests.get(url, params=params, headers=headers, timeout=30)
-    except Exception as e:
-        return [], {"source": "public_data_api", "status": -1, "error": f"request_error: {e}"}
+    # 3) CoinGecko trending (fallback)
+    url = "https://api.coingecko.com/api/v3/search/trending"
+    headers = {"Accept": "application/json", "User-Agent": "WPO-trending-bot/1.0"}
+    j, status, err = _req_json(url, headers=headers, timeout=20)
+    dbg["tried"].append({"source": "coingecko", "status": status, "error": err})
+    if j and isinstance(j.get("coins"), list):
+        out = []
+        for it in j["coins"]:
+            item = it.get("item") or {}
+            sym = item.get("symbol")
+            if sym:
+                out.append(str(sym).upper())
+            if len(out) >= 15:
+                break
+        if out:
+            dbg["selected"] = "coingecko"
+            return out[:15], dbg
 
-    status = r.status_code
-    snip = (r.text or "")[:700]
-
-    if status != 200:
-        return [], {"source": "public_data_api", "status": status, "error": snip}
-
-    try:
-        j = r.json()
-    except Exception as e:
-        return [], {"source": "public_data_api", "status": status, "error": f"json_parse_error: {e} :: {snip}"}
-
-    data = (((j or {}).get("data") or {}).get("cryptoCurrencyList")) or []
-    out = []
-    for it in data:
-        sym = (it.get("symbol") or "").strip()
-        if sym:
-            out.append(sym)
-
-    return out[:15], {"source": "public_data_api", "status": status, "error": ""}
+    dbg["selected"] = None
+    return [], dbg
 
 
 def post_to_x(text: str):
@@ -164,7 +217,7 @@ def build_tweet():
     hook = hook_list[run_count % len(hook_list)]
     labels = LABELS_BY_LANG.get(lang, LABELS_BY_LANG["EN"])
 
-    symbols, dbg = fetch_trending_top15_public()
+    symbols, dbg = fetch_trending_top15()
 
     debug_payload = {
         "utc": datetime.now(timezone.utc).isoformat(),
@@ -179,23 +232,29 @@ def build_tweet():
     state["run_count"] = run_count
     save_state(state)
 
-    if not symbols:
-        return None
-
-    list_text = ", ".join(symbols)
     tags = " ".join(FIXED_HASHTAGS + EXTRA_HASHTAGS)
-
     uniq = f"• {datetime.now(timezone.utc).strftime('%H:%M:%SZ')} • run#{run_count}"
+
+    if symbols:
+        list_text = ", ".join(symbols)
+        tweet = (
+            f"{hook}\n"
+            f"{labels['top']}: {list_text}\n"
+            f"{labels['source']}: {TRENDING_URL}\n"
+            f"{labels['submit']}: {FORM_URL}\n"
+            f"{labels['site']}: {SITE_URL}\n"
+            f"{tags} {uniq}"
+        )
+        return tweet
 
     tweet = (
         f"{hook}\n"
-        f"{labels['top']}: {list_text}\n"
+        f"{labels['fallback']}\n"
         f"{labels['source']}: {TRENDING_URL}\n"
         f"{labels['submit']}: {FORM_URL}\n"
         f"{labels['site']}: {SITE_URL}\n"
         f"{tags} {uniq}"
     )
-
     return tweet
 
 
@@ -203,11 +262,6 @@ def main():
     os.makedirs(OUT_DIR, exist_ok=True)
 
     tweet = build_tweet()
-    if not tweet:
-        with open(TWEET_FILE, "w", encoding="utf-8") as f:
-            f.write("NO_TRENDING_DATA")
-        print("No trending data; skipping.")
-        return
 
     with open(TWEET_FILE, "w", encoding="utf-8") as f:
         f.write(tweet)
