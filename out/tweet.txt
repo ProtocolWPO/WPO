@@ -1,7 +1,7 @@
-🔥 CMC Trending (1H) — safe list only.
+🧭 الترند الآن (ساعة) — مُرشّحة للأصول الأكثر أمانًا.
 NO_SAFE_TRENDING_DATA
 Source: https://coinmarketcap.com/?tableRankBy=trending_all_1h
 Submit: https://protocolwpo.github.io/WPO/#submit
 https://protocolwpo.github.io/WPO/
-#ProtocolWPO #CryptoNews #OnChain #Markets • 13:48Z
-Report suspicious wallets: https://protocolwpo.github.io/WPO/#submit
+#ProtocolWPO #CryptoNews #Markets #DYOR • 14:01Z
+بلّغ عن محافظ مشبوهة: https://protocolwpo.github.io/WPO/#submit
