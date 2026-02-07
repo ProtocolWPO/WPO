@@ -20,6 +20,7 @@ TRENDING_URL = "https://coinmarketcap.com/?tableRankBy=trending_all_1h"
 
 FIXED_HASHTAGS = ["#ProtocolWPO", "#CryptoNews"]
 EXTRA_HASHTAGS = ["#Trending", "#Altcoins"]
+
 LANGS = ["EN", "AR", "ZH", "ID"]
 
 HOOKS_BY_LANG = {
@@ -46,10 +47,10 @@ HOOKS_BY_LANG = {
 }
 
 LABELS_BY_LANG = {
-    "EN": {"top": "Top 15", "source": "Source", "verify": "Verify/Submit", "report": "Report"},
-    "AR": {"top": "أفضل 15", "source": "المصدر", "verify": "تحقق/إرسال", "report": "بلّغ"},
-    "ZH": {"top": "前15", "source": "来源", "verify": "核实/提交", "report": "举报"},
-    "ID": {"top": "Top 15", "source": "Sumber", "verify": "Verifikasi/Kirim", "report": "Laporkan"},
+    "EN": {"top": "Top 15", "source": "Source", "submit": "Submit", "site": "Site"},
+    "AR": {"top": "أفضل 15", "source": "المصدر", "submit": "إرسال", "site": "الموقع"},
+    "ZH": {"top": "前15", "source": "来源", "submit": "提交", "site": "站点"},
+    "ID": {"top": "Top 15", "source": "Sumber", "submit": "Kirim", "site": "Situs"},
 }
 
 CMC_BASE = "https://pro-api.coinmarketcap.com"
@@ -59,20 +60,20 @@ def sha(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def load_state():
+def load_state() -> dict:
     if os.path.exists(STATE_FILE):
         with open(STATE_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
     return {}
 
 
-def save_state(state):
+def save_state(state: dict) -> None:
     os.makedirs(OUT_DIR, exist_ok=True)
     with open(STATE_FILE, "w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
 
 
-def save_debug(obj):
+def save_debug(obj: dict) -> None:
     os.makedirs(OUT_DIR, exist_ok=True)
     with open(DEBUG_FILE, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, indent=2)
@@ -87,7 +88,7 @@ def cmc_get(path: str, params: dict | None = None):
     headers = {
         "X-CMC_PRO_API_KEY": cmc_key,
         "Accept": "application/json",
-        "User-Agent": "WPO-bot/1.0",
+        "User-Agent": "WPO-trending-bot/1.0",
     }
 
     try:
@@ -96,7 +97,7 @@ def cmc_get(path: str, params: dict | None = None):
         return None, -1, f"request_error: {e}"
 
     status = r.status_code
-    text_snip = (r.text or "")[:600]
+    text_snip = (r.text or "")[:700]
 
     if status in (401, 403, 429):
         return None, status, text_snip
@@ -113,7 +114,6 @@ def fetch_trending_top15():
         "/v1/cryptocurrency/trending/latest",
         {"start": 1, "limit": 15, "convert": "USD"},
     )
-
     dbg = {"endpoint": "/v1/cryptocurrency/trending/latest", "status": status, "error": err}
 
     if not j or "data" not in j:
@@ -199,8 +199,8 @@ def build_tweet():
         f"{hook}\n"
         f"{labels['top']}: {list_text}\n"
         f"{labels['source']}: {TRENDING_URL}\n"
-        f"{labels['verify']}: {FORM_URL}\n"
-        f"{SITE_URL}\n"
+        f"{labels['submit']}: {FORM_URL}\n"
+        f"{labels['site']}: {SITE_URL}\n"
         f"{tags} {uniq}"
     )
 
