@@ -23,26 +23,10 @@ EXTRA_HASHTAGS = ["#Trending", "#Altcoins"]
 LANGS = ["EN", "AR", "ZH", "ID"]
 
 HOOKS_BY_LANG = {
-    "EN": [
-        "🔥 Trending (1H) — Top 15",
-        "📈 Trending now (1H) — Top 15",
-        "🧭 Attention map (1H) — Top 15",
-    ],
-    "AR": [
-        "🔥 الترند (ساعة) — أفضل 15",
-        "📈 الترند الآن (ساعة) — أفضل 15",
-        "🧭 خريطة الانتباه (ساعة) — أفضل 15",
-    ],
-    "ZH": [
-        "🔥 1小时趋势榜 — 前15",
-        "📈 当前热门（1小时）— 前15",
-        "🧭 关注度地图（1小时）— 前15",
-    ],
-    "ID": [
-        "🔥 Trending (1J) — Top 15",
-        "📈 Lagi trending (1J) — Top 15",
-        "🧭 Peta perhatian (1J) — Top 15",
-    ],
+    "EN": ["🔥 Trending (1H) — Top 15", "📈 Trending now (1H) — Top 15", "🧭 Attention map (1H) — Top 15"],
+    "AR": ["🔥 الترند (ساعة) — أفضل 15", "📈 الترند الآن (ساعة) — أفضل 15", "🧭 خريطة الانتباه (ساعة) — أفضل 15"],
+    "ZH": ["🔥 1小时趋势榜 — 前15", "📈 当前热门（1小时）— 前15", "🧭 关注度地图（1小时）— 前15"],
+    "ID": ["🔥 Trending (1J) — Top 15", "📈 Lagi trending (1J) — Top 15", "🧭 Peta perhatian (1J) — Top 15"],
 }
 
 LABELS_BY_LANG = {
@@ -195,7 +179,7 @@ def fetch_trending_top15():
 def post_to_x(text: str):
     for k in ["X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_TOKEN_SECRET"]:
         if not os.getenv(k):
-            raise SystemExit(f"Missing secret: {k}")
+            return {"skipped": True, "reason": f"missing_secret:{k}"}
 
     oauth = OAuth1Session(
         client_key=os.getenv("X_API_KEY"),
@@ -209,17 +193,21 @@ def post_to_x(text: str):
     if r.status_code in (200, 201):
         return r.json()
 
-    if r.status_code == 403:
-        try:
-            j = r.json()
-        except Exception:
-            j = {"detail": r.text}
-        detail = str(j.get("detail", "")).lower()
-        if "duplicate" in detail:
-            print("X rejected duplicate content — skipping without failure.")
-            return {"skipped": True, "reason": "duplicate"}
+    try:
+        j = r.json()
+    except Exception:
+        j = {"detail": r.text}
 
-    raise SystemExit(f"X post failed: {r.status_code} {r.text}")
+    detail = str(j.get("detail", "")).lower()
+
+    if r.status_code == 403 and "duplicate" in detail:
+        return {"skipped": True, "reason": "duplicate", "status": 403, "detail": j}
+
+    # IMPORTANT: do not crash the workflow on 401/403/429
+    if r.status_code in (401, 403, 429):
+        return {"skipped": True, "reason": "x_forbidden_or_limited", "status": r.status_code, "detail": j}
+
+    return {"skipped": True, "reason": "x_post_failed", "status": r.status_code, "detail": j}
 
 
 def build_tweet():
@@ -284,12 +272,15 @@ def main():
     state = load_state()
     h = sha(tweet)
 
+    # Ensure uniqueness to avoid "duplicate" even if content repeats
+    uniq_suffix = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
     if state.get("last_hash") == h:
-        print("Same content as last post — skipping.")
-        return
+        tweet = tweet + f"\n{uniq_suffix}"
+        h = sha(tweet)
+        with open(TWEET_FILE, "w", encoding="utf-8") as f:
+            f.write(tweet)
 
     resp = post_to_x(tweet)
-    print("X post response:", str(resp)[:500])
 
     if isinstance(resp, dict) and resp.get("skipped"):
         state.update({
@@ -298,9 +289,16 @@ def main():
             "last_text": tweet,
             "posted_at_utc": datetime.now(timezone.utc).isoformat(),
             "skipped_reason": resp.get("reason"),
+            "x_status": resp.get("status"),
+            "x_detail": resp.get("detail"),
         })
         save_state(state)
-        print("Skipped posting to X due to duplicate content.")
+        save_debug({
+            "utc": datetime.now(timezone.utc).isoformat(),
+            "event": "x_post_skipped",
+            "skipped": resp,
+        })
+        print("X post skipped:", resp.get("reason"), resp.get("status"))
         return
 
     tweet_id = (resp or {}).get("data", {}).get("id")
@@ -310,6 +308,9 @@ def main():
         "last_tweet_id": tweet_id,
         "last_text": tweet,
         "posted_at_utc": datetime.now(timezone.utc).isoformat(),
+        "skipped_reason": None,
+        "x_status": 200,
+        "x_detail": None,
     })
     save_state(state)
 
