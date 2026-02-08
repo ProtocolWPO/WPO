@@ -246,7 +246,6 @@ def build_tweet():
             f"{hook}\n"
             f"{labels['top']}: {list_text}\n"
             f"{report_line} {FORM_URL}\n"
-            f"{labels['site']}: {SITE_URL}\n"
             f"{tags} {uniq}"
         )
         return tweet
@@ -255,7 +254,6 @@ def build_tweet():
         f"{hook}\n"
         f"{labels['fallback']}\n"
         f"{report_line} {FORM_URL}\n"
-        f"{labels['site']}: {SITE_URL}\n"
         f"{tags} {uniq}"
     )
     return tweet
