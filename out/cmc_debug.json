@@ -1,13 +1,13 @@
 {
-  "utc": "2026-02-08T10:14:36.586582+00:00",
-  "run_count": 32,
-  "lang": "EN",
+  "utc": "2026-02-08T15:15:21.881438+00:00",
+  "run_count": 33,
+  "lang": "AR",
   "trending_debug": {
     "tried": [
       {
         "source": "cmc_pro",
         "status": 403,
-        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-08T10:14:36.247Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
+        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-08T15:15:21.480Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
       },
       {
         "source": "cmc_public",
@@ -25,19 +25,19 @@
   "selected_count": 15,
   "symbols": [
     "BTC",
-    "SOL",
     "ASTER",
-    "BNKR",
+    "HYPE",
+    "SOL",
     "PENGU",
-    "SIREN",
+    "SUI",
+    "LINK",
     "TAO",
     "ETH",
-    "ZIL",
-    "WIF",
-    "HYPE",
-    "SUI",
     "ONDO",
-    "KAS",
-    "BNB"
+    "PI",
+    "FET",
+    "BNKR",
+    "LIT",
+    "VIRTUAL"
   ]
 }
