@@ -1,43 +1,15 @@
 {
-  "utc": "2026-02-09T06:00:47.803730+00:00",
-  "run_count": 36,
-  "lang": "EN",
-  "trending_debug": {
-    "tried": [
-      {
-        "source": "cmc_pro",
-        "status": 403,
-        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-09T06:00:47.075Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
-      },
-      {
-        "source": "cmc_public",
-        "status": 200,
-        "error": ""
-      },
-      {
-        "source": "coingecko",
-        "status": 200,
-        "error": ""
-      }
-    ],
-    "selected": "coingecko"
-  },
-  "selected_count": 15,
-  "symbols": [
-    "AXS",
-    "BTC",
-    "XRP",
-    "HYPE",
-    "PENGU",
-    "BNKR",
-    "SOL",
-    "ASTER",
-    "KAS",
-    "XAUT",
-    "BNB",
-    "ETH",
-    "SUI",
-    "XMR",
-    "SKR"
-  ]
+  "utc": "2026-02-09T10:45:20.825896+00:00",
+  "event": "x_post_skipped",
+  "skipped": {
+    "skipped": true,
+    "reason": "x_forbidden_or_limited",
+    "status": 403,
+    "detail": {
+      "detail": "You are not permitted to perform this action.",
+      "type": "about:blank",
+      "title": "Forbidden",
+      "status": 403
+    }
+  }
 }

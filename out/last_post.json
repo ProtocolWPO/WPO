@@ -1,10 +1,15 @@
 {
-  "last_hash": "f52c299b8901567797e58c44dc78f49861fe1af960d724f42e61366c2a415f86",
-  "last_tweet_id": "2020739638340780537",
-  "last_text": "🔥 Trending (1H) — Top 15\nTop 15: $AXS, $BTC, $XRP, $HYPE, $PENGU, $BNKR, $SOL, $ASTER, $KAS, $XAUT, $BNB, $ETH, $SUI, $XMR, $SKR\n🚨 Saw suspicious movement or a scam project? Report here: https://protocolwpo.github.io/WPO/#submit\n#ProtocolWPO #CryptoNews #Trending #Altcoins • 06:00:47Z • run#36",
-  "posted_at_utc": "2026-02-09T06:00:48.105031+00:00",
-  "run_count": 36,
-  "skipped_reason": null,
-  "x_status": 200,
-  "x_detail": null
+  "last_hash": "6544f324305fe02a471c6ab89f19a2a91bd9ca173941345e1677d6a636c87f9f",
+  "last_tweet_id": null,
+  "last_text": "📈 الترند الآن (ساعة) — أفضل 15\nأفضل 15: $BTC, $SOL, $AXS, $PENGU, $SUI, $HYPE, $XRP, $BNKR, $ETH, $ASTER, $ONDO, $TAO, $DOGE, $ATOM, $CC\n🛡️ احمِ المتداولين — بلّغ عن محافظ/مشاريع مشبوهة هنا: https://protocolwpo.github.io/WPO/#submit\n#ProtocolWPO #CryptoNews #Trending #Altcoins • 10:45:20Z • run#37",
+  "posted_at_utc": "2026-02-09T10:45:20.825453+00:00",
+  "run_count": 37,
+  "skipped_reason": "x_forbidden_or_limited",
+  "x_status": 403,
+  "x_detail": {
+    "detail": "You are not permitted to perform this action.",
+    "type": "about:blank",
+    "title": "Forbidden",
+    "status": 403
+  }
 }
