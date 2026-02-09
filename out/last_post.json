@@ -1,10 +1,15 @@
 {
-  "last_hash": "f030513cd99f2cf2c3527098a5c3deee5a0d0ff4f25f7e2aec53285cc5a60dbe",
-  "last_tweet_id": "2020865448200249661",
-  "last_text": "🧭 关注度地图（1小时）— 前15\n前15: $BTC, $HYPE, $SOL, $AXS, $PENGU, $SUI, $KAS, $ETH, $MON, $ONDO, $BNKR, $PENDLE, $AAVE, $ICP, $SYRUP\n🔎 在此提交可疑活动证据： https://protocolwpo.github.io/WPO/#submit\n#ProtocolWPO #CryptoNews #Trending #Altcoins • 14:20:43Z • run#38",
-  "posted_at_utc": "2026-02-09T14:20:43.529059+00:00",
-  "run_count": 38,
-  "skipped_reason": null,
-  "x_status": 200,
-  "x_detail": null
+  "last_hash": "9cc35bc5bc74624d647b0c2136289008481d8e51673f745cbd0c27e74b70849c",
+  "last_tweet_id": null,
+  "last_text": "🔥 Trending (1J) — Top 15\nTop 15: $BTC, $HYPE, $SOL, $SUI, $AXS, $PENGU, $XRP, $ETH, $TAO, $MON, $POL, $ZAMA, $AVAX, $AAVE, $BNKR\n🚨 Lihat pergerakan mencurigakan atau proyek scam? Laporkan di sini: https://protocolwpo.github.io/WPO/#submit\n#ProtocolWPO #CryptoNews #Trending #Altcoins • 15:43:12Z • run#39",
+  "posted_at_utc": "2026-02-09T15:43:12.501660+00:00",
+  "run_count": 39,
+  "skipped_reason": "x_forbidden_or_limited",
+  "x_status": 403,
+  "x_detail": {
+    "detail": "You are not permitted to perform this action.",
+    "type": "about:blank",
+    "title": "Forbidden",
+    "status": 403
+  }
 }
