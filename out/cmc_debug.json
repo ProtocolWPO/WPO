@@ -1,13 +1,13 @@
 {
-  "utc": "2026-02-08T20:14:13.385985+00:00",
-  "run_count": 34,
-  "lang": "ZH",
+  "utc": "2026-02-09T01:07:49.136328+00:00",
+  "run_count": 35,
+  "lang": "ID",
   "trending_debug": {
     "tried": [
       {
         "source": "cmc_pro",
         "status": 403,
-        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-08T20:14:13.096Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
+        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-09T01:07:48.823Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
       },
       {
         "source": "cmc_public",
@@ -24,20 +24,20 @@
   },
   "selected_count": 15,
   "symbols": [
-    "BNKR",
-    "BTC",
-    "HYPE",
-    "ASTER",
-    "SOL",
-    "XRP",
-    "ONDO",
-    "ETH",
     "PENGU",
-    "TAO",
-    "ZEC",
-    "XMR",
+    "BNKR",
+    "HYPE",
+    "SOL",
+    "BTC",
+    "XRP",
     "KAS",
-    "LINEA",
-    "ICP"
+    "CC",
+    "FET",
+    "ZEC",
+    "SUI",
+    "DOGE",
+    "DASH",
+    "ETH",
+    "ASTER"
   ]
 }
