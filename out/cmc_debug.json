@@ -1,13 +1,13 @@
 {
-  "utc": "2026-02-10T01:16:58.266270+00:00",
-  "run_count": 41,
-  "lang": "AR",
+  "utc": "2026-02-10T06:04:44.184759+00:00",
+  "run_count": 42,
+  "lang": "ZH",
   "trending_debug": {
     "tried": [
       {
         "source": "cmc_pro",
         "status": 403,
-        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-10T01:16:57.965Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
+        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-10T06:04:43.902Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
       },
       {
         "source": "cmc_public",
@@ -24,20 +24,20 @@
   },
   "selected_count": 15,
   "symbols": [
-    "ZKP",
-    "SOL",
-    "AXS",
     "BTC",
+    "BNKR",
     "PENGU",
     "HYPE",
-    "TAO",
-    "LINK",
-    "BNKR",
-    "ZEC",
-    "XMR",
+    "ZRO",
+    "SOL",
+    "RIVER",
     "FIGHT",
-    "CC",
-    "HBAR",
-    "LINEA"
+    "SUI",
+    "XRP",
+    "ETH",
+    "XLM",
+    "TAO",
+    "PI",
+    "PIPPIN"
   ]
 }
