@@ -1,13 +1,13 @@
 {
-  "utc": "2026-02-10T15:55:39.947417+00:00",
-  "run_count": 44,
-  "lang": "EN",
+  "utc": "2026-02-10T20:33:36.945364+00:00",
+  "run_count": 45,
+  "lang": "AR",
   "trending_debug": {
     "tried": [
       {
         "source": "cmc_pro",
         "status": 403,
-        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-10T15:55:39.491Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
+        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-10T20:33:36.532Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
       },
       {
         "source": "cmc_public",
@@ -24,20 +24,20 @@
   },
   "selected_count": 15,
   "symbols": [
-    "ZRO",
+    "UP",
     "BTC",
     "BNKR",
-    "POWER",
-    "HYPE",
-    "ETH",
     "SOL",
-    "TAO",
-    "ASTER",
-    "LINK",
+    "ZRO",
+    "ETH",
+    "MON",
     "PENGU",
-    "PIPPIN",
-    "SUI",
-    "PUMP",
-    "S"
+    "HYPE",
+    "LINK",
+    "ONDO",
+    "TAO",
+    "LTC",
+    "XRP",
+    "HBAR"
   ]
 }
