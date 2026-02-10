@@ -1,15 +1,10 @@
 {
-  "last_hash": "70c364f3df29275b8e1b75bd75e4cd0755556c3fe3dbbca01f7d321a37cc710c",
-  "last_tweet_id": null,
-  "last_text": "📈 Lagi trending (1J) — Top 15\nTop 15: $ZRO, $BNKR, $BTC, $SOL, $RIVER, $ASTER, $XRP, $PENGU, $AXS, $CC, $PEPE, $LIT, $HYPE, $ETH, $FIGHT\n🛡️ Lindungi trader — laporkan dompet/proyek mencurigakan di sini: https://protocolwpo.github.io/WPO/#submit\n#ProtocolWPO #CryptoNews #Trending #Altcoins • 10:42:51Z • run#43",
-  "posted_at_utc": "2026-02-10T10:42:52.046083+00:00",
-  "run_count": 43,
-  "skipped_reason": "x_forbidden_or_limited",
-  "x_status": 403,
-  "x_detail": {
-    "detail": "You are not permitted to perform this action.",
-    "type": "about:blank",
-    "title": "Forbidden",
-    "status": 403
-  }
+  "last_hash": "6a7cc404b0c6d80e1bab92199991d0227224b0cc04ce593ea6ab1351c29f25bb",
+  "last_tweet_id": "2021251730063708449",
+  "last_text": "🧭 Attention map (1H) — Top 15\nTop 15: $ZRO, $BTC, $BNKR, $POWER, $HYPE, $ETH, $SOL, $TAO, $ASTER, $LINK, $PENGU, $PIPPIN, $SUI, $PUMP, $S\n🔎 Submit evidence of suspicious activity here: https://protocolwpo.github.io/WPO/#submit\n#ProtocolWPO #CryptoNews #Trending #Altcoins • 15:55:39Z • run#44",
+  "posted_at_utc": "2026-02-10T15:55:40.312574+00:00",
+  "run_count": 44,
+  "skipped_reason": null,
+  "x_status": 200,
+  "x_detail": null
 }
