@@ -1,13 +1,13 @@
 {
-  "utc": "2026-02-11T01:14:32.279709+00:00",
-  "run_count": 46,
-  "lang": "ZH",
+  "utc": "2026-02-11T06:01:30.912697+00:00",
+  "run_count": 47,
+  "lang": "ID",
   "trending_debug": {
     "tried": [
       {
         "source": "cmc_pro",
         "status": 403,
-        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-11T01:14:31.987Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
+        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-11T06:01:30.401Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
       },
       {
         "source": "cmc_public",
@@ -25,19 +25,19 @@
   "selected_count": 15,
   "symbols": [
     "ZRO",
-    "BNKR",
     "BTC",
-    "SOL",
-    "HYPE",
-    "ETH",
-    "PIPPIN",
-    "MON",
-    "PENGU",
-    "TRUMP",
-    "GWEI",
-    "LTC",
     "SUI",
-    "LINK",
-    "AXS"
+    "ZAMA",
+    "HYPE",
+    "ASTER",
+    "AXS",
+    "PENGU",
+    "ETH",
+    "TAO",
+    "ONDO",
+    "SKR",
+    "LTC",
+    "XRP",
+    "MON"
   ]
 }
