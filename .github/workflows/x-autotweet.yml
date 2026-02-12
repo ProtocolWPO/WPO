@@ -22,6 +22,8 @@ jobs:
 
       - name: Install deps
         run: pip install requests requests-oauthlib
+             pip install requests
+             pip install Pillow
 
       - name: Run autopost
         env:
