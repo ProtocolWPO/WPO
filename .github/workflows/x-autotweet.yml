@@ -11,19 +11,20 @@ permissions:
 jobs:
   autopost:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install deps
-        run: pip install requests requests-oauthlib Pillow
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests requests-oauthlib Pillow
 
-      - name: Run autopost
+      - name: Run bot
         env:
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
@@ -31,19 +32,14 @@ jobs:
           X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
           CMC_KEY: ${{ secrets.CMC_KEY }}
         run: |
-          echo "Starting X Auto Post: $(date -u)"
+          echo "Starting bot at $(date -u)"
           python scripts/x_autopost.py
 
-      - name: Commit logs (tweet + state)
+      - name: Commit logs
         run: |
-          set -e
           git config user.name "x-bot"
           git config user.email "x-bot@users.noreply.github.com"
 
-          git stash push -m "autopost-stash" || true
-          git pull --rebase origin main || true
-          git stash pop || true
-
-          git add out/tweet.txt out/last_post.json out/cmc_debug.json
-          git commit -m "x: auto post $(date -u)" || echo "Nothing to commit"
-          git push origin HEAD:main || true
+          git add out/ || true
+          git commit -m "Auto post $(date -u)" || echo "Nothing to commit"
+          git push
