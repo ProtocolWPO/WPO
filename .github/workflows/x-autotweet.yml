@@ -30,7 +30,9 @@ jobs:
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
           CMC_KEY: ${{ secrets.CMC_KEY }}
-        run: python scripts/x_autopost.py
+        run: |
+          echo "Starting X Auto Post: $(date -u)"
+          python scripts/x_autopost.py
 
       - name: Commit logs (tweet + state)
         run: |
@@ -38,18 +40,10 @@ jobs:
           git config user.name "x-bot"
           git config user.email "x-bot@users.noreply.github.com"
 
-          # Stash local changes before pulling
           git stash push -m "autopost-stash" || true
-
-          # Pull latest changes safely
           git pull --rebase origin main || true
-
-          # Restore stashed changes
           git stash pop || true
 
-          # Commit updated files
           git add out/tweet.txt out/last_post.json out/cmc_debug.json
-          git commit -m "x: auto post" || echo "Nothing to commit"
-
-          # Push without failing the job
+          git commit -m "x: auto post $(date -u)" || echo "Nothing to commit"
           git push origin HEAD:main || true
