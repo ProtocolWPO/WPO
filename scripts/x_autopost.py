@@ -26,8 +26,12 @@ def sha(text: str) -> str:
 
 def load_state() -> dict:
     if os.path.exists(STATE_FILE):
-        with open(STATE_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+        try:
+            with open(STATE_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, FileNotFoundError):
+            print("State file corrupted or missing. Creating new state.")
+            return {}
     return {}
 
 
@@ -47,15 +51,18 @@ def _req_json(url: str, params=None, headers=None, timeout=30):
     try:
         r = requests.get(url, params=params or {}, headers=headers or {}, timeout=timeout)
         if r.status_code != 200:
+            print(f"Request failed: {url} -> {r.status_code}")
             return None
         return r.json()
-    except:
+    except Exception as e:
+        print(f"Request exception: {url} -> {e}")
         return None
 
 
 def fetch_trending_top15():
     cmc_key = os.getenv("CMC_KEY")
 
+    # CoinMarketCap Pro
     if cmc_key:
         url = f"{CMC_PRO_BASE}/v1/cryptocurrency/trending/latest"
         headers = {"X-CMC_PRO_API_KEY": cmc_key}
@@ -63,6 +70,7 @@ def fetch_trending_top15():
         if j and isinstance(j.get("data"), list):
             return [it.get("symbol") for it in j["data"] if it.get("symbol")][:15]
 
+    # CoinMarketCap Free
     url = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/listing"
     params = {
         "start": 1,
@@ -76,6 +84,7 @@ def fetch_trending_top15():
         lst = (j.get("data") or {}).get("cryptoCurrencyList") or []
         return [it.get("symbol") for it in lst if it.get("symbol")][:15]
 
+    # CoinGecko Trending
     url = "https://api.coingecko.com/api/v3/search/trending"
     j = _req_json(url)
     if j and isinstance(j.get("coins"), list):
@@ -130,6 +139,7 @@ def generate_image(symbols):
 def post_to_x(text: str, image_path=None):
     for k in ["X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_TOKEN_SECRET"]:
         if not os.getenv(k):
+            print(f"Missing X key: {k}")
             return {"skipped": True}
 
     oauth = OAuth1Session(
@@ -146,16 +156,18 @@ def post_to_x(text: str, image_path=None):
             r = oauth.post(MEDIA_UPLOAD_URL, files={"media": f})
             if r.status_code == 200:
                 media_id = r.json().get("media_id_string")
+            else:
+                print(f"Media upload failed: {r.status_code}")
 
     payload = {"text": text}
     if media_id:
         payload["media"] = {"media_ids": [media_id]}
 
     r = oauth.post(X_POST_URL, json=payload)
-
     if r.status_code in (200, 201):
         return r.json()
-
+    else:
+        print(f"Tweet post failed: {r.status_code}")
     return {"skipped": True}
 
 
@@ -189,8 +201,19 @@ def main():
     state = load_state()
     h = sha(tweet)
 
-    resp = post_to_x(tweet, IMAGE_FILE)
+    # Skip X post if trending data unavailable
+    if tweet == "Trending data temporarily unavailable.":
+        print("No trending data. Skipping X post.")
+        state.update({
+            "last_hash": h,
+            "last_tweet_id": None,
+            "last_text": tweet,
+            "posted_at_utc": datetime.now(timezone.utc).isoformat(),
+        })
+        save_state(state)
+        return
 
+    resp = post_to_x(tweet, IMAGE_FILE)
     tweet_id = (resp or {}).get("data", {}).get("id")
 
     state.update({
