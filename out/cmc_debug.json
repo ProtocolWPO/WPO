@@ -1,15 +1,43 @@
 {
-  "utc": "2026-02-12T01:06:53.064595+00:00",
-  "event": "x_post_skipped",
-  "skipped": {
-    "skipped": true,
-    "reason": "x_forbidden_or_limited",
-    "status": 403,
-    "detail": {
-      "detail": "You are not permitted to perform this action.",
-      "type": "about:blank",
-      "title": "Forbidden",
-      "status": 403
-    }
-  }
+  "utc": "2026-02-12T05:57:18.374297+00:00",
+  "run_count": 53,
+  "lang": "AR",
+  "trending_debug": {
+    "tried": [
+      {
+        "source": "cmc_pro",
+        "status": 403,
+        "error": "{\n    \"status\": {\n        \"timestamp\": \"2026-02-12T05:57:17.821Z\",\n        \"error_code\": 1006,\n        \"error_message\": \"Your API Key subscription plan doesn't support this endpoint.\",\n        \"elapsed\": 0,\n        \"credit_count\": 0\n    }\n}"
+      },
+      {
+        "source": "cmc_public",
+        "status": 200,
+        "error": ""
+      },
+      {
+        "source": "coingecko",
+        "status": 200,
+        "error": ""
+      }
+    ],
+    "selected": "coingecko"
+  },
+  "selected_count": 15,
+  "symbols": [
+    "BERA",
+    "UNI",
+    "LINEA",
+    "BTC",
+    "HYPE",
+    "PENGU",
+    "ZRO",
+    "PIPPIN",
+    "TAO",
+    "SOL",
+    "ASTER",
+    "BNKR",
+    "ZEC",
+    "ETH",
+    "SUI"
+  ]
 }

@@ -1,15 +1,10 @@
 {
-  "last_hash": "1e2a5e84482cbed20ef4f85995a2f5365adfd4a5efd1d8314794162bd8c8f939",
-  "last_tweet_id": null,
-  "last_text": "📈 Trending now (1H) — Top 15\nTop 15: $BERA, $BTC, $UNI, $SOL, $PENGU, $ZRO, $LINEA, $TAO, $ETH, $HYPE, $MON, $FHE, $XRP, $ASTER, $SKR\n🛡️ Protect traders — report suspicious wallets/projects here: https://protocolwpo.github.io/WPO/#submit\n#ProtocolWPO #CryptoNews #Trending #Altcoins • 01:06:52Z • run#52",
-  "posted_at_utc": "2026-02-12T01:06:53.064143+00:00",
-  "run_count": 52,
-  "skipped_reason": "x_forbidden_or_limited",
-  "x_status": 403,
-  "x_detail": {
-    "detail": "You are not permitted to perform this action.",
-    "type": "about:blank",
-    "title": "Forbidden",
-    "status": 403
-  }
+  "last_hash": "38ebfb6efc99b3d6676df6063880d4a480e88a547b4c16320ce15c4fcd23c496",
+  "last_tweet_id": "2021825923633627597",
+  "last_text": "🧭 خريطة الانتباه (ساعة) — أفضل 15\nأفضل 15: $BERA, $UNI, $LINEA, $BTC, $HYPE, $PENGU, $ZRO, $PIPPIN, $TAO, $SOL, $ASTER, $BNKR, $ZEC, $ETH, $SUI\n🔎 أرسل الأدلة عن نشاط مشبوه هنا: https://protocolwpo.github.io/WPO/#submit\n#ProtocolWPO #CryptoNews #Trending #Altcoins • 05:57:18Z • run#53",
+  "posted_at_utc": "2026-02-12T05:57:18.711640+00:00",
+  "run_count": 53,
+  "skipped_reason": null,
+  "x_status": 200,
+  "x_detail": null
 }
