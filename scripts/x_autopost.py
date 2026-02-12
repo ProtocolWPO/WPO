@@ -3,6 +3,7 @@ import json
 import hashlib
 import random
 from datetime import datetime, timezone
+import time
 
 import requests
 from requests_oauthlib import OAuth1Session
@@ -16,8 +17,10 @@ IMAGE_FILE = os.path.join(OUT_DIR, "top15.png")
 
 X_POST_URL = "https://api.x.com/2/tweets"
 MEDIA_UPLOAD_URL = "https://upload.twitter.com/1.1/media/upload.json"
-
 CMC_PRO_BASE = "https://pro-api.coinmarketcap.com"
+
+MAX_RETRIES = 3
+RETRY_DELAY = 30  # seconds
 
 
 def sha(text: str) -> str:
@@ -150,7 +153,6 @@ def post_to_x(text: str, image_path=None):
     )
 
     media_id = None
-
     if image_path and os.path.exists(image_path):
         with open(image_path, "rb") as f:
             r = oauth.post(MEDIA_UPLOAD_URL, files={"media": f})
@@ -174,7 +176,13 @@ def post_to_x(text: str, image_path=None):
 # ================= BUILD TWEET =================
 
 def build_tweet():
-    symbols = fetch_trending_top15()
+    symbols = []
+    for attempt in range(1, MAX_RETRIES + 1):
+        symbols = fetch_trending_top15()
+        if symbols:
+            break
+        print(f"Attempt {attempt}: No trending data. Retrying in {RETRY_DELAY}s...")
+        time.sleep(RETRY_DELAY)
 
     save_debug({
         "utc": datetime.now(timezone.utc).isoformat(),
