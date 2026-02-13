@@ -1,20 +1,20 @@
 {
-  "utc": "2026-02-13T01:06:57.580436+00:00",
+  "utc": "2026-02-13T05:51:35.666431+00:00",
   "symbols": [
-    "BTC",
-    "ESP",
-    "AZTEC",
-    "ZRO",
-    "TAO",
-    "AAVE",
-    "HYPE",
-    "SOL",
     "PENGU",
+    "ESP",
+    "BTC",
+    "AZTEC",
+    "MON",
+    "HYPE",
+    "TAO",
+    "BNKR",
+    "ETH",
     "UNI",
-    "LIT",
-    "SKR",
     "PIPPIN",
-    "BERA",
-    "ASTER"
+    "PEPE",
+    "LINK",
+    "ASTER",
+    "HBAR"
   ]
 }
