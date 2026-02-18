@@ -3,218 +3,222 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Whale Protocol Official (WPO) – Whitepaper</title>
+<title>Whale Protocol Official (WPO) - Whitepaper</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background-color: #0f172a;
-        color: #e2e8f0;
-        line-height: 1.7;
-    }
-    header {
-        background: linear-gradient(90deg, #0ea5e9, #6366f1);
-        padding: 40px 20px;
-        text-align: center;
-    }
-    header h1 {
-        margin: 0;
-        font-size: 36px;
-    }
-    header p {
-        margin-top: 10px;
-        font-size: 18px;
-        opacity: 0.9;
-    }
-    section {
-        padding: 50px 20px;
-        max-width: 1000px;
-        margin: auto;
-    }
-    h2 {
-        color: #38bdf8;
-        border-bottom: 1px solid #1e293b;
-        padding-bottom: 10px;
-        margin-top: 40px;
-    }
-    h3 {
-        color: #a5b4fc;
-        margin-top: 25px;
-    }
-    ul {
-        margin-top: 10px;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-    th, td {
-        border: 1px solid #1e293b;
-        padding: 12px;
-        text-align: left;
-    }
-    th {
-        background-color: #1e293b;
-    }
-    footer {
-        background-color: #020617;
-        padding: 30px 20px;
-        text-align: center;
-        font-size: 14px;
-        color: #94a3b8;
-    }
-    a {
-        color: #38bdf8;
-        text-decoration: none;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(180deg, #050b1f 0%, #07132e 100%);
+    color: #e6edf7;
+    line-height: 1.8;
+}
+
+header {
+    background: rgba(10, 20, 50, 0.95);
+    padding: 20px 40px;
+    border-bottom: 1px solid rgba(255, 200, 80, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+header h1 {
+    color: #f5c15d;
+    font-size: 24px;
+}
+
+nav {
+    margin-top: 10px;
+}
+
+nav a {
+    color: #d6e1ff;
+    text-decoration: none;
+    margin-right: 20px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #f5c15d;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.section {
+    margin-bottom: 60px;
+    padding: 30px;
+    background: rgba(10, 20, 50, 0.6);
+    border: 1px solid rgba(255, 200, 80, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(255, 200, 80, 0.05);
+}
+
+.section h2 {
+    color: #f5c15d;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.section h3 {
+    color: #ffd98a;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+.highlight {
+    color: #f5c15d;
+    font-weight: 600;
+}
+
+.token-box {
+    background: rgba(255, 200, 80, 0.05);
+    border: 1px solid rgba(255, 200, 80, 0.3);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    background: rgba(10, 20, 50, 0.9);
+    border-top: 1px solid rgba(255, 200, 80, 0.2);
+    font-size: 14px;
+    color: #9fb2d8;
+}
 </style>
 </head>
+
 <body>
 
 <header>
-    <h1>🐋 Whale Protocol Official (WPO)</h1>
-    <p>Market Integrity • Fraud Reporting • Investor Protection</p>
-    <p>Whitepaper – Version 1.0</p>
+    <h1>Whale Protocol Official (WPO)</h1>
+    <nav>
+        <a href="#overview">Overview</a>
+        <a href="#problem">Problem</a>
+        <a href="#solution">Solution</a>
+        <a href="#token">Token</a>
+        <a href="#governance">Governance</a>
+        <a href="#security">Security</a>
+        <a href="#disclaimer">Disclaimer</a>
+    </nav>
 </header>
 
-<section>
+<div class="container">
 
-<h2>1. Executive Summary</h2>
+<section id="overview" class="section">
+<h2>1. Executive Overview</h2>
 <p>
-Whale Protocol Official (WPO) is an independent community initiative dedicated to strengthening integrity and transparency within digital asset markets through structured reporting, evidence-based analysis, and responsible risk alerts.
-WPO does not provide financial advice or price predictions. It operates as a community-driven integrity layer designed to reduce risk and restore trust in digital markets.
+Whale Protocol Official (WPO) is a blockchain-based reporting and market integrity platform 
+designed to detect suspicious on-chain activity, protect investors, and promote transparency.
 </p>
-
-<h2>2. Market Problem</h2>
-<ul>
-<li>Fraudulent or misleading projects</li>
-<li>Wallets linked to scam activity</li>
-<li>Coordinated price manipulation</li>
-<li>Unlocked liquidity risks</li>
-<li>Dangerous smart contract privileges</li>
-<li>Unfair token distributions</li>
-</ul>
-
-<h2>3. Mission & Vision</h2>
-<h3>Mission</h3>
-<p>Build a transparent, evidence-based reporting system that reduces risk and supports investor protection.</p>
-
-<h3>Vision</h3>
-<p>Become a recognized integrity layer strengthening digital markets through transparency and accountability.</p>
-
-<h2>4. Platform Architecture</h2>
-<ul>
-<li>Report Submission Interface</li>
-<li>Evidence Review Layer</li>
-<li>Risk Classification Engine</li>
-<li>Public Report Archive</li>
-<li>WPO Token Utility Layer</li>
-</ul>
-
-<h2>5. How the Protocol Works</h2>
-<h3>Step 1 – Report Submission</h3>
-<ul>
-<li>Transaction Hashes (TX)</li>
-<li>Wallet Addresses</li>
-<li>Explorer Links</li>
-<li>Timeline Description</li>
-</ul>
-
-<h3>Step 2 – Evidence Review</h3>
-<p>Liquidity status, contract ownership, token distribution, and suspicious activity patterns are analyzed.</p>
-
-<h3>Step 3 – Risk Classification</h3>
-<ul>
-<li><strong>HIGH</strong> – Elevated risk indicators</li>
-<li><strong>MEDIUM</strong> – Further verification required</li>
-<li><strong>INFO</strong> – General safety reminder</li>
-</ul>
-
-<h3>Step 4 – Public Alert</h3>
-<p>Neutral, evidence-based reports are published without defamatory claims.</p>
-
-<h2>6. Coordinated Action Framework</h2>
-<p>
-When strong evidence of harmful activity is identified, documented case files may be prepared and shared with relevant compliance or technical teams.
-Whale Protocol does not possess enforcement authority.
-</p>
-
-<h2>7. WPO Token Overview</h2>
-<p><strong>Total Supply: 7,500,000 WPO</strong></p>
-<ul>
-<li>Fixed supply</li>
-<li>No minting</li>
-<li>No burn mechanism</li>
-<li>Non-inflationary</li>
-</ul>
-
-<h2>8. Token Allocation</h2>
-<table>
-<tr>
-<th>Category</th>
-<th>Percentage</th>
-</tr>
-<tr>
-<td>Circulating Supply</td>
-<td>60%</td>
-</tr>
-<tr>
-<td>Locked Strategic Reserve</td>
-<td>40%</td>
-</tr>
-</table>
-
-<h2>9. Token Utility Model</h2>
-
-<h3>Stake-Based Reporting</h3>
-<p>
-Users stake WPO tokens when submitting a report. Tokens remain locked during review.
-Validated reports may receive rewards. Unsupported reports may face partial deductions.
-</p>
-
-<h3>Instant Fee Model</h3>
-<p>
-Reports may also be submitted through a direct WPO fee. Fees are transferred to the protocol treasury and are non-refundable.
-</p>
-
-<h2>10. Governance</h2>
-<p>1 WPO = 1 Vote</p>
-<ul>
-<li>Reporting fee adjustments</li>
-<li>Risk classification updates</li>
-<li>Supported network expansion</li>
-<li>Reward policy decisions</li>
-</ul>
-
-<h2>11. Roadmap</h2>
-<ul>
-<li>Website & reporting system launch</li>
-<li>Stake-based reporting activation</li>
-<li>Advanced analytics dashboard</li>
-<li>Community governance rollout</li>
-</ul>
-
-<h2>12. Security & Integrity Policy</h2>
-<ul>
-<li>No accusations without evidence</li>
-<li>No personal data publication</li>
-<li>No financial advice</li>
-<li>No price speculation</li>
-</ul>
-
-<h2>13. Legal Disclaimer</h2>
-<p>
-Whale Protocol Official is not a regulatory authority and does not provide financial or legal advice.
-All reports are published for educational and risk-awareness purposes only.
-</p>
-
 </section>
 
+<section id="problem" class="section">
+<h2>2. The Problem</h2>
+<ul>
+<li>Increasing scams and fraudulent smart contracts</li>
+<li>Lack of structured on-chain reporting systems</li>
+<li>No incentive-driven verification mechanism</li>
+<li>Weak coordination with blockchain security entities</li>
+</ul>
+</section>
+
+<section id="solution" class="section">
+<h2>3. The Solution</h2>
+<p>
+WPO provides a decentralized reporting platform where users submit blockchain-related reports 
+through a token-based mechanism ensuring seriousness and preventing spam.
+</p>
+
+<h3>Platform Features</h3>
+<ul>
+<li>Report submission with token staking or instant fee</li>
+<li>On-chain evidence transparency</li>
+<li>Public categorized reports</li>
+<li>Security-focused analysis publication</li>
+</ul>
+</section>
+
+<section id="token" class="section">
+<h2>4. WPO Tokenomics</h2>
+
+<div class="token-box">
+<p><span class="highlight">Token Name:</span> Whale Protocol Official</p>
+<p><span class="highlight">Symbol:</span> WPO</p>
+<p><span class="highlight">Total Supply:</span> 7,500,000 WPO</p>
+<p><span class="highlight">Burn Mechanism:</span> None</p>
+<p><span class="highlight">Locked Supply:</span> 40% of total supply</p>
+</div>
+
+<h3>Token Utility</h3>
+<ul>
+<li>Submitting reports via staking or instant token fee</li>
+<li>Access to premium analytical tools</li>
+<li>Governance participation (future phase)</li>
+<li>Platform operational support</li>
+</ul>
+
+<h3>Report Submission Mechanism</h3>
+<p>
+Users must either stake WPO tokens temporarily or pay a direct WPO fee to submit a report.
+This ensures report seriousness and reduces spam or malicious submissions.
+</p>
+</section>
+
+<section id="governance" class="section">
+<h2>5. Governance & Platform Coordination</h2>
+<p>
+The platform may coordinate with blockchain explorers, security communities, 
+and network administrators when serious violations are detected.
+</p>
+<p>
+WPO governance mechanisms may evolve to include token-holder voting 
+for platform updates and policy changes.
+</p>
+</section>
+
+<section id="security" class="section">
+<h2>6. Security & Integrity</h2>
+<ul>
+<li>No financial advice provided</li>
+<li>Evidence-based reporting only</li>
+<li>Transparent publication model</li>
+<li>Cooperation with ecosystem security entities when required</li>
+</ul>
+</section>
+
+<section id="disclaimer" class="section">
+<h2>7. Disclaimer</h2>
+<p>
+Whale Protocol Official (WPO) does not provide financial advice, investment guarantees, 
+or price predictions. The token is a utility asset within the ecosystem. 
+Users are responsible for their own decisions and due diligence.
+</p>
+</section>
+
+</div>
+
 <footer>
-    Official X: <a href="https://x.com/Protocol_WPO" target="_blank">https://x.com/Protocol_WPO</a><br>
-    Email: whalebreaker2025@gmail.com<br><br>
-    © 2026 Whale Protocol Official
+© 2026 Whale Protocol Official (WPO). All Rights Reserved.
 </footer>
 
 </body>
