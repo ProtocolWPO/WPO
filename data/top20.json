@@ -1,185 +1,185 @@
 {
-  "updated_utc": "2026-02-26T22:34:35Z",
+  "updated_utc": "2026-02-26T23:31:02Z",
   "criteria": "CMC-only | Exclude stable/wrapped | MarketCap>=200000000 | Volume24h>=20000000 | Score=log(vol)+0.7log(mcap)+ratio(clamped)-penalty",
   "items": [
     {
       "symbol": "BTC",
       "name": "Bitcoin",
-      "price": 67417.54107138423,
-      "volume_24h": 45439005567.26321,
-      "market_cap": 1348029307174.3152,
-      "vol_mcap_ratio": 0.03370772825593134,
+      "price": 67617.05816660738,
+      "volume_24h": 43823036233.64733,
+      "market_cap": 1352020793710.5542,
+      "vol_mcap_ratio": 0.03241298982789841,
       "rank": 1
     },
     {
       "symbol": "ETH",
       "name": "Ethereum",
-      "price": 2029.4984874938316,
-      "volume_24h": 24909392832.96569,
-      "market_cap": 244944820773.9858,
-      "vol_mcap_ratio": 0.10169389478926748,
+      "price": 2033.0543320670831,
+      "volume_24h": 23887187495.111176,
+      "market_cap": 245373983799.75916,
+      "vol_mcap_ratio": 0.09735012296415518,
       "rank": 2
     },
     {
       "symbol": "XRP",
       "name": "XRP",
-      "price": 1.396873152647374,
-      "volume_24h": 3649948920.5985756,
-      "market_cap": 85235221770.03053,
-      "vol_mcap_ratio": 0.042822073372981245,
+      "price": 1.4017149347971367,
+      "volume_24h": 3433427822.3591948,
+      "market_cap": 85530660460.73416,
+      "vol_mcap_ratio": 0.0401426553222447,
       "rank": 3
     },
     {
       "symbol": "SOL",
       "name": "Solana",
-      "price": 85.94715762992097,
-      "volume_24h": 4475152422.22203,
-      "market_cap": 48882457038.326996,
-      "vol_mcap_ratio": 0.09154925290914125,
+      "price": 86.05087475079003,
+      "volume_24h": 4281774650.6325216,
+      "market_cap": 48941443605.3097,
+      "vol_mcap_ratio": 0.08748770643471555,
       "rank": 4
     },
     {
       "symbol": "BNB",
       "name": "BNB",
-      "price": 623.9270875130084,
-      "volume_24h": 2831224551.493092,
-      "market_cap": 85077987661.68385,
-      "vol_mcap_ratio": 0.03327799151469795,
+      "price": 625.8008171853934,
+      "volume_24h": 2798561431.5194716,
+      "market_cap": 85333486900.8478,
+      "vol_mcap_ratio": 0.03279558275605479,
       "rank": 5
     },
     {
       "symbol": "USD1",
       "name": "World Liberty Financial USD",
-      "price": 0.9999346331554838,
-      "volume_24h": 4180742296.926068,
-      "market_cap": 4702462220.893226,
-      "vol_mcap_ratio": 0.8890538829532462,
+      "price": 0.9999334659947688,
+      "volume_24h": 4179340867.678872,
+      "market_cap": 4702456732.005266,
+      "vol_mcap_ratio": 0.8887569000335444,
       "rank": 6
     },
     {
       "symbol": "DOGE",
       "name": "Dogecoin",
-      "price": 0.09666153289211808,
-      "volume_24h": 1283738621.7515712,
-      "market_cap": 16326624248.28576,
-      "vol_mcap_ratio": 0.0786285396312933,
+      "price": 0.09698834025347715,
+      "volume_24h": 1194548582.8400178,
+      "market_cap": 16381872166.99262,
+      "vol_mcap_ratio": 0.07291892957429374,
       "rank": 7
-    },
-    {
-      "symbol": "AAVE",
-      "name": "Aave",
-      "price": 114.40600015801654,
-      "volume_24h": 1134864709.556906,
-      "market_cap": 1753823186.5086956,
-      "vol_mcap_ratio": 0.6470804573042855,
-      "rank": 8
     },
     {
       "symbol": "TRX",
       "name": "TRON",
-      "price": 0.2856446656125508,
-      "volume_24h": 506656451.3773612,
-      "market_cap": 27061457999.206966,
-      "vol_mcap_ratio": 0.01872243732736827,
-      "rank": 9
+      "price": 0.28562565123703165,
+      "volume_24h": 499527725.02416587,
+      "market_cap": 27059683945.86515,
+      "vol_mcap_ratio": 0.018460220231082784,
+      "rank": 8
     },
     {
       "symbol": "ADA",
       "name": "Cardano",
-      "price": 0.2864736192747278,
-      "volume_24h": 761080792.8131248,
-      "market_cap": 10334288442.63342,
-      "vol_mcap_ratio": 0.07364617283889005,
-      "rank": 10
+      "price": 0.28719763519626945,
+      "volume_24h": 703713025.9172748,
+      "market_cap": 10360406691.808382,
+      "vol_mcap_ratio": 0.06792330135781992,
+      "rank": 9
     },
     {
       "symbol": "SUI",
       "name": "Sui",
-      "price": 0.9298424137829314,
-      "volume_24h": 772903651.014033,
-      "market_cap": 3576334346.7307982,
-      "vol_mcap_ratio": 0.21611616143232254,
-      "rank": 11
+      "price": 0.9379995032381078,
+      "volume_24h": 726726409.2887932,
+      "market_cap": 3607707920.0970836,
+      "vol_mcap_ratio": 0.20143715217090993,
+      "rank": 10
     },
     {
       "symbol": "BCH",
       "name": "Bitcoin Cash",
-      "price": 478.3120797338441,
-      "volume_24h": 395029251.2115273,
-      "market_cap": 9566392561.927048,
-      "vol_mcap_ratio": 0.04129343936644315,
-      "rank": 12
+      "price": 479.541200977885,
+      "volume_24h": 374662060.14610994,
+      "market_cap": 9590984366.146778,
+      "vol_mcap_ratio": 0.039063984033646394,
+      "rank": 11
     },
     {
       "symbol": "LINK",
       "name": "Chainlink",
-      "price": 9.100944670454194,
-      "volume_24h": 431191089.1913475,
-      "market_cap": 6444378652.239241,
-      "vol_mcap_ratio": 0.06690964520551887,
-      "rank": 13
+      "price": 9.115829783807328,
+      "volume_24h": 421708925.00748974,
+      "market_cap": 6454918800.564778,
+      "vol_mcap_ratio": 0.06533140664303817,
+      "rank": 12
     },
     {
       "symbol": "DOT",
       "name": "Polkadot",
-      "price": 1.5834729001164407,
-      "volume_24h": 563168639.2793081,
-      "market_cap": 2643289977.708671,
-      "vol_mcap_ratio": 0.21305594317256457,
-      "rank": 14
+      "price": 1.6091426156408175,
+      "volume_24h": 526583905.1607689,
+      "market_cap": 2686140412.195628,
+      "vol_mcap_ratio": 0.196037371229728,
+      "rank": 13
     },
     {
       "symbol": "AVAX",
       "name": "Avalanche",
-      "price": 9.27316058862407,
-      "volume_24h": 456614963.7477257,
-      "market_cap": 4003890733.6614428,
-      "vol_mcap_ratio": 0.11404281338371203,
-      "rank": 15
+      "price": 9.323872776398149,
+      "volume_24h": 440605962.9534526,
+      "market_cap": 4025786834.4322443,
+      "vol_mcap_ratio": 0.10944592475313987,
+      "rank": 14
     },
     {
       "symbol": "PEPE",
       "name": "Pepe",
-      "price": 3.826285145786775e-06,
-      "volume_24h": 550874623.4178251,
-      "market_cap": 1583211576.2909324,
-      "vol_mcap_ratio": 0.3479475716747765,
-      "rank": 16
+      "price": 3.826179269137956e-06,
+      "volume_24h": 527758140.50265497,
+      "market_cap": 1583167767.4450984,
+      "vol_mcap_ratio": 0.3333557891684128,
+      "rank": 15
     },
     {
       "symbol": "HYPE",
       "name": "Hyperliquid",
-      "price": 28.25199552183353,
-      "volume_24h": 305770686.28761464,
-      "market_cap": 7301612458.598757,
-      "vol_mcap_ratio": 0.04187714535951895,
-      "rank": 17
+      "price": 28.427028052484438,
+      "volume_24h": 293465970.9124883,
+      "market_cap": 7346856883.973575,
+      "vol_mcap_ratio": 0.03994442460865879,
+      "rank": 16
     },
     {
       "symbol": "LTC",
       "name": "Litecoin",
-      "price": 55.24718530461013,
-      "volume_24h": 368808465.972227,
-      "market_cap": 4248142646.9030848,
-      "vol_mcap_ratio": 0.08681640345601153,
-      "rank": 18
+      "price": 55.58486990551938,
+      "volume_24h": 359649132.78813046,
+      "market_cap": 4274113219.8984303,
+      "vol_mcap_ratio": 0.0841459068313303,
+      "rank": 17
     },
     {
       "symbol": "VBNB",
       "name": "Venus BNB",
-      "price": 15.544051889695035,
-      "volume_24h": 421250336.7545297,
-      "market_cap": 421253122.3214939,
-      "vol_mcap_ratio": 0.9999933874271392,
-      "rank": 19
+      "price": 15.586684588838425,
+      "volume_24h": 422405700.99498934,
+      "market_cap": 422405696.73820496,
+      "vol_mcap_ratio": 1.0000000100774786,
+      "rank": 18
     },
     {
       "symbol": "ZEC",
       "name": "Zcash",
-      "price": 237.588362263275,
-      "volume_24h": 324511654.12864757,
-      "market_cap": 3933084919.8291364,
-      "vol_mcap_ratio": 0.08250817379827771,
+      "price": 238.87904711607763,
+      "volume_24h": 312802547.91879207,
+      "market_cap": 3954455443.098672,
+      "vol_mcap_ratio": 0.07910129534135883,
+      "rank": 19
+    },
+    {
+      "symbol": "XAUT",
+      "name": "Tether Gold",
+      "price": 5164.8292263547855,
+      "volume_24h": 363457327.3471348,
+      "market_cap": 2689975496.0716515,
+      "vol_mcap_ratio": 0.1351154788874157,
       "rank": 20
     }
   ]
